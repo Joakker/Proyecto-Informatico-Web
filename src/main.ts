@@ -1,4 +1,5 @@
 import { createApp } from 'vue'
-import App from './App.vue'
+import Profile from './Profile.vue'
 
-createApp(App).mount('#app')
+const profile = createApp(Profile);
+profile.mount('#app');
