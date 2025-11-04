@@ -1,5 +1,6 @@
 import { createApp } from 'vue'
-import Profile from './Profile.vue'
+import App from './views/App.vue'
+import Router from './router/router.ts'
 
-const profile = createApp(Profile);
-profile.mount('#app');
+
+createApp(App).use(Router).mount('#app')
