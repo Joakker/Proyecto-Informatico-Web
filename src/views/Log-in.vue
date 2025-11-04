@@ -33,6 +33,7 @@ async function EnterAccount() {
     }
 
     userStore.setUser(result.user);
+    localStorage.setItem('user', JSON.stringify(result.user))
     console.log(result);
     router.push('/')
   } catch (error) {
