@@ -43,27 +43,43 @@ async function CreateAccount() {
 </script>
 
 <template>
-  <form @submit.prevent="CreateAccount">
-    <label for="fname">First name:</label><br>
-    <input v-model="fname" type="text" id="fname" name="fname"><br>
+  <h1>Registro</h1>
 
-    <label for="lname">Last name:</label><br>
-    <input v-model="lname" type="text" id="lname" name="lname"><br>
+  <div class="form">
+    <form @submit.prevent="CreateAccount">
+      <label for="fname">Nombre</label><br>
+      <input v-model="fname" type="text" id="fname" name="fname"><br>
 
-    <label for="pnumber">Phone number:</label><br>
-    <input v-model="phone" type="text" id="pnumber" name="pnumber"><br>
+      <label for="lname">Apellido</label><br>
+      <input v-model="lname" type="text" id="lname" name="lname"><br>
 
-    <label for="address">Address:</label><br>
-    <input v-model="address" type="text" id="address" name="address"><br>
+      <label for="pnumber">Teléfono</label><br>
+      <input v-model="phone" type="text" id="pnumber" name="pnumber"><br>
 
-    <label for="email">Email:</label><br>
-    <input v-model="email" type="email" id="email" name="email"><br>
+      <label for="address">Dirección</label><br>
+      <input v-model="address" type="text" id="address" name="address"><br>
 
-    <label for="password">Password:</label><br>
-    <input v-model="password" type="password" id="password" name="password"><br>
+      <label for="email">Correo electrónico</label><br>
+      <input v-model="email" type="email" id="email" name="email"><br>
 
-    <button type="submit">Crear cuenta</button>
-  </form>
+      <label for="password">Contraseña</label><br>
+      <input v-model="password" type="password" id="password" name="password"><br>
+
+      <hr></hr>
+
+      <button type="submit">Crear cuenta</button>
+    </form>
+  </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+  .form {
+    display: flex;
+    justify-content: center;
+  }
+
+  h1 {
+    display: flex;
+    justify-content: center;
+  }
+</style>
