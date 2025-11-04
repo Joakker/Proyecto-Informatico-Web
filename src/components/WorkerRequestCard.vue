@@ -3,7 +3,6 @@
     interface Work {
         title: string
         description: string
-        budget: number
     }
 
     const props = defineProps<{
@@ -15,8 +14,6 @@
   <div class="work-card">
     <h3>{{ work.title }}</h3>
     <p>{{ work.description }}</p>
-    <p><strong>Presupuesto:</strong> ${{ work.budget }}</p>
-    <!-- Add image, tags, buttons, etc. -->
   </div>
 </template>
 

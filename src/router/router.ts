@@ -3,12 +3,20 @@ import Signup from '../views/Sign-up.vue'
 import App from '../views/App.vue'
 import Home from '../views/Home.vue'
 import ClientRequests from '../views/ClientRequests.vue'
+import WorkerRequests from '@/views/WorkerRequests.vue'
+import LogIn from '@/views/Log-in.vue'
 
 const routes = [
   {
     path: '/signup',
     name: 'Signup',
     component: Signup
+  },
+
+  {
+    path: '/login',
+    name: 'Login',
+    component: LogIn
   },
 
   {
@@ -21,6 +29,12 @@ const routes = [
     path: '/clientrequests',
     name: 'ClientRequests',
     component: ClientRequests
+  },
+
+  {
+    path: '/workerrequests',
+    name: 'WorkerRequests',
+    component: WorkerRequests
   }
 
 ]

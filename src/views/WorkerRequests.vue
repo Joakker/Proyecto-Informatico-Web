@@ -1,7 +1,7 @@
 
 <script setup lang="ts">
     import { ref, onMounted } from 'vue'
-    import WorkRequestCard from '../components/ClientRequestCard.vue'
+    import WorkRequestCard from '../components/WorkerRequestCard.vue'
 
     interface WorkRequest {
         id: number
@@ -17,7 +17,7 @@
     onMounted(async () => {
         try {
             
-            const response = await fetch('http://127.0.0.1:8000/api/clientrequests')
+            const response = await fetch('http://127.0.0.1:8000/api/workerrequests')
             const data = await response.json()
             works.value = data
         } catch (error) {

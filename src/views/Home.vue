@@ -18,6 +18,12 @@
             <router-link to="/clientrequests">Encuentra un cliente</router-link>
         </div>
     </div>
+    <div class="find-client">
+        <h2>¿Buscas un especialista?</h2>
+        <div class="right-nav">
+            <router-link to="/workerrequests">Encuentra uno aquí</router-link>
+        </div>
+    </div>
 
 </template>
 
