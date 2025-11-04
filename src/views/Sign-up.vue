@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { ref } from 'vue';
+import { useRouter } from 'vue-router'
 
+const router = useRouter()
 const fname = ref('');
 const lname = ref('');
 const phone = ref('');
@@ -35,7 +37,7 @@ async function CreateAccount() {
 
     const result = await response.json();
     console.log(result);
-    window.location.href = "http://localhost:5173/";
+    router.push('/')
   } catch (error) {
     console.error(error);
   }

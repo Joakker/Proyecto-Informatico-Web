@@ -1,17 +1,28 @@
 <script setup lang="ts">
+    import { useUserStore } from '@/stores/user'
+    import { computed } from 'vue'
 
+    const userStore = useUserStore()
+    const isLoggedIn = computed(() => userStore.user !== null)
 </script>
 
 <template>
-    <div class="title">
-        <h1>Bienvenido a maestro chasquilla!</h1>
-    </div>
-    <div class="register-ask">
-        <h2>¿Aún no tienes cuenta?</h2>
-        <div class="right-nav">
-            <router-link to="/signup">¡Regístrate!</router-link>
+    <template v-if="isLoggedIn">
+        <div class="title">
+            <h1>Bienvenido a maestro chasquilla!</h1>
         </div>
-    </div>
+    </template>
+    <template v-else>
+        <div class="title">
+            <h1>Bienvenido a maestro chasquilla!</h1>
+        </div>
+        <div class="register-ask">
+            <h2>¿Aún no tienes cuenta?</h2>
+            <div class="right-nav">
+                <router-link to="/signup">¡Regístrate!</router-link>
+            </div>
+        </div>
+    </template>
     <div class="find-client">
         <h2>¿Buscas un trabajo?</h2>
         <div class="right-nav">
