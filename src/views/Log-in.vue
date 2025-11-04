@@ -1,10 +1,16 @@
 <script setup lang="ts">
 import { ref } from 'vue';
+import { useUserStore } from '@/stores/user'
+import { useRouter } from 'vue-router'
 
+const router = useRouter()
 const email = ref('');
 const password = ref('');
+const userStore = useUserStore()
+const loading = ref(false)
 
 async function EnterAccount() {
+  loading.value = true
   const url = "http://127.0.0.1:8000/api/login";
   try {
     const response = await fetch(url, {
@@ -19,17 +25,20 @@ async function EnterAccount() {
       }),
     });
 
+    const result = await response.json();
+
     if (!response.ok) {
-      const errorData = await response.json();
-      console.error("Validation errors:", errorData.error);
+      console.error("Validation errors:", result.message || result.errors || "Unknown error");
       throw new Error(`Response status: ${response.status}`);
     }
 
-    const result = await response.json();
+    userStore.setUser(result.user);
     console.log(result);
-    window.location.href = "http://localhost:5173/";
+    router.push('/')
   } catch (error) {
     console.error(error);
+  } finally {
+    loading.value = false
   }
 }
 </script>
@@ -48,7 +57,9 @@ async function EnterAccount() {
 
       <hr></hr>
 
-      <button type="submit">Iniciar sesión</button>
+      <button type="submit" :disabled="loading">
+        {{ loading ? 'Cargando...' : 'Iniciar sesión' }}
+      </button>
     </form>
   </div>
 </template>

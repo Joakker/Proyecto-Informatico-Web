@@ -1,22 +1,42 @@
 <template>
   <div>
     <nav>
-        <div>
-            <router-link to="/">Home</router-link>
-        </div>
-        
-        <div class="right-nav">
-            <router-link to="/login">Log in</router-link>
-            <router-link to="/signup">Sign up</router-link>
-        </div>
+      <div>
+        <router-link to="/">Home</router-link>
+      </div>
+
+      <div class="right-nav">
+        <template v-if="isLoggedIn">
+          <router-link to="/profile">Profile</router-link>
+          <button @click="logout">Log out</button>
+        </template>
+        <template v-else>
+          <router-link to="/login">Log in</router-link>
+          <router-link to="/signup">Sign up</router-link>
+        </template>
+      </div>
     </nav>
 
     <router-view />
   </div>
 </template>
 
-<script setup lang="ts">
 
+
+<script setup lang="ts">
+    import { useUserStore } from '@/stores/user'
+    import { computed } from 'vue'
+    import { useRouter } from 'vue-router'
+
+    const userStore = useUserStore()
+    const isLoggedIn = computed(() => userStore.user !== null)
+    const router = useRouter()
+
+    function logout() {
+        userStore.logout()
+        localStorage.removeItem('user') // optional: clear persisted user
+        router.push('/')           // redirect to login page
+    }
 </script>
 
 <style scoped>
