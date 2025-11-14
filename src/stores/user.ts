@@ -7,14 +7,16 @@ interface User {
 
 export const useUserStore = defineStore('user', {
   state: () => ({
-    user: null as User | null,
+    user: null as null | { id: number; name: string; email: string },
   }),
   actions: {
-    setUser(userData: User) {
+    setUser(userData: { id: number; name: string; email: string }) {
       this.user = userData
     },
     logout() {
       this.user = null
+      localStorage.clear()
     },
   },
 })
+
