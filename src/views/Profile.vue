@@ -24,6 +24,7 @@ async function getUserType() {
         }
 
         const data = await response.json()
+        console.log("Datos recibidos de /api/user/type:", data)
         userType.value = data.type
     } catch (error) {
         console.error(error)
@@ -80,6 +81,15 @@ onMounted(() => {
             <div class="user-type">
                 <h3>Tu cuenta está configurada como CLIENTE</h3>
                 <p>Si quieres cambiarla a MAESTRO, tendrás que registrarte de nuevo.</p>
+            </div>
+
+        </template>
+
+        <template v-if="userType === 2">
+
+            <div class="user-type">
+                <h3>Tu cuenta está configurada como MAESTRO</h3>
+                <p>Si quieres cambiarla a CLIENTE, tendrás que registrarte de nuevo.</p>
             </div>
 
         </template>
