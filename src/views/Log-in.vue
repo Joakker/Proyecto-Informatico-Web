@@ -32,7 +32,7 @@ async function EnterAccount() {
       throw new Error(`Response status: ${response.status}`);
     }
 
-    userStore.setUser(result.user);
+    userStore.setUser(result.user, result.token);
     localStorage.setItem('user', JSON.stringify(result.user))
     localStorage.setItem('token', result.token)
 

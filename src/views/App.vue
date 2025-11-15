@@ -36,6 +36,7 @@
     function logout() {
         userStore.logout()
         localStorage.removeItem('user') // optional: clear persisted user
+        localStorage.removeItem('token')
         router.push('/')           // redirect to login page
     }
 </script>

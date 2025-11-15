@@ -17,8 +17,9 @@ import { useUserStore } from '@/stores/user'
 const userStore = useUserStore()
 
 const savedUser = localStorage.getItem('user')
-if (savedUser) {
-  userStore.setUser(JSON.parse(savedUser))
+const savedToken = localStorage.getItem('token')
+if (savedUser && savedToken) {
+  userStore.setUser(JSON.parse(savedUser), savedToken)
 }
 
 app.mount('#app')
