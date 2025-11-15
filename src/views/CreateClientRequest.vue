@@ -93,6 +93,11 @@ async function submitJob() {
 </template>
 
 <style scoped>
+
+h2 {
+    margin-top: 2rem;
+}
+
 form {
   display: flex;
   flex-direction: column;
@@ -105,12 +110,13 @@ input, textarea {
   font-size: 1rem;
 }
 button {
-  padding: 0.75rem;
-  font-weight: bold;
-  background-color: #2c3e50;
-  color: white;
-  border: none;
-  cursor: pointer;
+    margin-bottom: 2rem;
+    padding: 0.75rem;
+    font-weight: bold;
+    background-color: #2c3e50;
+    color: white;
+    border: none;
+    cursor: pointer;
 }
 iframe {
   margin-top: 1rem;

@@ -52,7 +52,7 @@ async function CreateAccount() {
 
 <template>
   <div class="container mt-5">
-    <h1 class="text-center mb-4">Registro Maestro Chasquillas</h1>
+    <h1 class="text-center mb-4">Registro Maestro Chasquilla</h1>
 
     <div class="card p-4 shadow mx-auto" style="max-width: 500px;">
       <form @submit.prevent="CreateAccount">
@@ -84,7 +84,7 @@ async function CreateAccount() {
           >
             <i class="bi bi-hammer fs-1 text-primary"></i>
             <div class="fw-bold mt-2">Trabajador</div>
-            <div class="text-muted small">Necesito ofrecer trabajo</div>
+            <div class="text-muted small">Necesito encontrar trabajo</div>
           </div>
         </div>
 
