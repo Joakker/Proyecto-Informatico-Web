@@ -58,9 +58,6 @@
                 <router-link to="/clientrequests">Encuentra un cliente</router-link>
             </div>
         </div>
-
-
-
     </template>
     <template v-else>
         <div class="title">

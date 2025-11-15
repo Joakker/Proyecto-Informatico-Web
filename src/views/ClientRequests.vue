@@ -37,7 +37,7 @@
 
 <template>
   <div>
-    <h2>Pedidos</h2>
+    <h2>Solicitudes de trabajo</h2>
     <button @click="toCreatePost">Pedir un maestro</button>
     <div v-if="loading">Cargando pedidos...</div>
     <div v-else>

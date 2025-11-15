@@ -1,8 +1,10 @@
 <template>
   <div>
     <nav>
-      <div>
+      <div class="left-nav">
         <router-link to="/">Home</router-link>
+        <router-link to="/clientrequests">Trabajos</router-link>
+        <router-link to="/workerrequests">Trabajadores</router-link>
       </div>
 
       <div class="right-nav">
@@ -44,6 +46,13 @@
         display: flex;
         justify-content: space-between;
         gap: 1rem;
+    }
+
+    .left-nav {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 1rem;
     }
 
     .right-nav {

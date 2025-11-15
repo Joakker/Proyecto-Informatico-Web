@@ -30,7 +30,7 @@
 
 <template>
   <div>
-    <h2>Pedidos</h2>
+    <h2>Trabajadores</h2>
     <div v-if="loading">Cargando pedidos...</div>
     <div v-else>
       <WorkRequestCard v-for="work in works" :key="work.id" :work="work" />
