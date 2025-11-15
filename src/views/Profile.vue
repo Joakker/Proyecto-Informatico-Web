@@ -24,6 +24,7 @@ async function getUserType() {
         }
 
         const data = await response.json()
+        console.log("Datos recibidos de /api/user/type:", data)
         userType.value = data.type
     } catch (error) {
         console.error(error)
@@ -74,7 +75,7 @@ onMounted(() => {
             </div>
 
             <hr></hr>
-
+            
             <template v-if="userType === 1">
 
                 <div class="user-type">
