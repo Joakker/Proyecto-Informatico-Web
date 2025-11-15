@@ -1,16 +1,66 @@
 <script setup lang="ts">
     import { useUserStore } from '@/stores/user'
-    import { computed } from 'vue'
+    import { computed, onMounted, ref } from 'vue'
+
 
     const userStore = useUserStore()
     const isLoggedIn = computed(() => userStore.user !== null)
+
+    const userType = ref<number|null>(null)
+
+    async function getUserType() {
+        try {
+            const response = await fetch('http://127.0.0.1:8000/api/user/type', {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Authorization': `Bearer ${localStorage.getItem('token')}` // token from login
+            }
+            })
+
+            if (!response.ok) {
+            throw new Error(`Error ${response.status}`)
+            }
+
+            const data = await response.json()
+            userType.value = data.type
+            console.log('User type:', data.type)
+        } catch (error) {
+            console.error(error)
+        }
+    }
+
+    onMounted(() => {
+        if (isLoggedIn.value) {
+            getUserType()
+        }
+    })
 </script>
 
 <template>
     <template v-if="isLoggedIn">
         <div class="title">
-            <h1>Bienvenido a maestro chasquilla!</h1>
+        <h1 v-if="userType === 1">Bienvenido, cliente</h1>
+        <h1 v-else-if="userType === 2">Bienvenido, maestro</h1>
+        <h1 v-else>Bienvenido a maestro chasquilla!</h1>
         </div>
+
+        <div v-if="userType === 1" class="find-client">
+            <h2>¿Buscas un especialista?</h2>
+            <div class="right-nav">
+                <router-link to="/workerrequests">Encuentra uno aquí</router-link>
+            </div>
+        </div>
+
+        <div v-else-if="userType === 2" class="find-client">
+            <h2>¿Buscas un trabajo?</h2>
+            <div class="right-nav">
+                <router-link to="/clientrequests">Encuentra un cliente</router-link>
+            </div>
+        </div>
+
+
+
     </template>
     <template v-else>
         <div class="title">
@@ -22,19 +72,20 @@
                 <router-link to="/signup">¡Regístrate!</router-link>
             </div>
         </div>
+
+        <div class="find-client">
+            <h2>¿Buscas un trabajo?</h2>
+            <div class="right-nav">
+                <router-link to="/clientrequests">Encuentra un cliente</router-link>
+            </div>
+        </div>
+        <div class="find-client">
+            <h2>¿Buscas un especialista?</h2>
+            <div class="right-nav">
+                <router-link to="/workerrequests">Encuentra uno aquí</router-link>
+            </div>
+        </div>
     </template>
-    <div class="find-client">
-        <h2>¿Buscas un trabajo?</h2>
-        <div class="right-nav">
-            <router-link to="/clientrequests">Encuentra un cliente</router-link>
-        </div>
-    </div>
-    <div class="find-client">
-        <h2>¿Buscas un especialista?</h2>
-        <div class="right-nav">
-            <router-link to="/workerrequests">Encuentra uno aquí</router-link>
-        </div>
-    </div>
 
 </template>
 
