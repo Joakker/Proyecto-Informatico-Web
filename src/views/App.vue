@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="nav-root">
     <nav>
       <div class="left-nav">
         <router-link to="/">Home</router-link>
@@ -18,9 +18,8 @@
         </template>
       </div>
     </nav>
-
-    <router-view />
   </div>
+  <router-view />
 </template>
 
 
@@ -42,7 +41,9 @@
 </script>
 
 <style scoped>
+    
     nav {
+        background-color: yellow;
         display: flex;
         justify-content: space-between;
         gap: 1rem;
@@ -62,4 +63,13 @@
         gap: 1rem;
     }
 
+</style>
+
+<style>
+  html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    background-color: white;
+  }
 </style>
