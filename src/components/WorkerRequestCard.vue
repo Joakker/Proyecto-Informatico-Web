@@ -21,6 +21,6 @@
 .work-card {
   border: 1px solid #ccc;
   padding: 1rem;
-  margin-bottom: 1rem;
+  margin: 1rem;
 }
 </style>

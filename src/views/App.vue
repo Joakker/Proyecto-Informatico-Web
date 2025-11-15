@@ -1,25 +1,39 @@
 <template>
-  <div class="nav-root">
-    <nav>
-      <div class="left-nav">
-        <router-link to="/">Home</router-link>
-        <router-link to="/clientrequests">Trabajos</router-link>
-        <router-link to="/workerrequests">Trabajadores</router-link>
-      </div>
+  <div class="app-root">
+    <div class="nav-root">
+      <nav>
+        <div class="left-nav">
+          <router-link to="/">Home</router-link>
+          <router-link to="/clientrequests">Trabajos</router-link>
+          <router-link to="/workerrequests">Trabajadores</router-link>
+        </div>
 
-      <div class="right-nav">
-        <template v-if="isLoggedIn">
-          <router-link to="/profile">Profile</router-link>
-          <button @click="logout">Log out</button>
-        </template>
-        <template v-else>
-          <router-link to="/login">Log in</router-link>
-          <router-link to="/signup">Sign up</router-link>
-        </template>
-      </div>
-    </nav>
+        <div class="right-nav">
+          <template v-if="isLoggedIn">
+            <router-link to="/profile">Profile</router-link>
+            <button @click="logout">Log out</button>
+          </template>
+          <template v-else>
+            <router-link to="/login">Log in</router-link>
+            <router-link to="/signup">Sign up</router-link>
+          </template>
+        </div>
+      </nav>
+    </div>
+    
+    <main class="main-content">
+      <router-view />
+    </main>
+
+    <div class="footer-root">
+      <footer>
+        <div class="logo-div">
+          <img alt="acá debería haber un logo"></img>
+          <p>Maestro chasquilla 2025 @ Todos los derechos reservados</p>
+        </div>
+      </footer>
+    </div>
   </div>
-  <router-view />
 </template>
 
 
@@ -44,10 +58,25 @@
 <style scoped>
     
     nav {
-        background-color: yellow;
-        display: flex;
-        justify-content: space-between;
-        gap: 1rem;
+      background-color: yellow;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      min-height: 3rem;
+    }
+
+    footer {
+      background-color: yellow;
+      padding: 1rem;
+      text-align: center;
+    }
+
+    .logo-div{
+      display: flex;
+      flex-direction: column;
+      justify-items: center;
+      align-items: center;
     }
 
     .left-nav {
@@ -64,6 +93,12 @@
         gap: 1rem;
     }
 
+    .app-root {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh; /* ocupa toda la altura */
+    }
+
 </style>
 
 <style>
@@ -72,5 +107,9 @@
     padding: 0;
     height: 100%;
     background-color: white;
+  }
+
+  .main-content {
+    flex: 1; /* empuja el footer hacia abajo */
   }
 </style>

@@ -7,6 +7,7 @@
     const isLoggedIn = computed(() => userStore.user !== null)
 
     const userType = ref<number|null>(null)
+    const userInfo = ref();
 
     async function getUserType() {
         try {
@@ -30,9 +31,31 @@
         }
     }
 
+    async function getUserInfo() {
+        try {
+            const response = await fetch('http://127.0.0.1:8000/api/user', {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Authorization': `Bearer ${localStorage.getItem('token')}` // token from login
+            }
+            })
+
+            if (!response.ok) {
+            throw new Error(`Error ${response.status}`)
+            }
+
+            const data = await response.json()
+            userInfo.value = data
+        } catch (error) {
+            console.error(error)
+        }
+    }
+
     onMounted(() => {
         if (isLoggedIn.value) {
             getUserType()
+            getUserInfo();
         }
     })
 </script>
@@ -40,8 +63,8 @@
 <template>
     <template v-if="isLoggedIn">
         <div class="title">
-        <h1 v-if="userType === 1">Bienvenido, cliente</h1>
-        <h1 v-else-if="userType === 2">Bienvenido, maestro</h1>
+        <h1 v-if="userType === 1">Bienvenido, {{userInfo?.first_name}}</h1>
+        <h1 v-else-if="userType === 2">Bienvenido, {{ userInfo?.last_name }}</h1>
         <h1 v-else>Bienvenido a maestro chasquilla!</h1>
         </div>
 
