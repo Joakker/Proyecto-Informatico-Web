@@ -6,6 +6,7 @@ import ClientRequests from '../views/ClientRequests.vue'
 import WorkerRequests from '@/views/WorkerRequests.vue'
 import LogIn from '@/views/Log-in.vue'
 import Profile from '@/views/Profile.vue'
+import CreateClientRequest from '@/views/CreateClientRequest.vue'
 
 const routes = [
   {
@@ -43,6 +44,12 @@ const routes = [
     name: 'Profile',
     component: Profile
   },
+
+  {
+    path: '/createclientrequest',
+    name: 'CreateClientRequest',
+    component: CreateClientRequest
+  }
 
 ]
 
