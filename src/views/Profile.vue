@@ -8,6 +8,15 @@ const isLoggedIn = computed(() => userStore.user !== null)
 
 const userType = ref<number|null>(null)
 const userInfo = ref();
+//para editar perfil:
+const editMode = ref(false)
+
+const editData = ref({
+    fname: '',
+    lname: '',
+    phone: '',
+    address: ''
+})
 
 async function getUserType() {
     try {
@@ -47,10 +56,48 @@ async function getUserInfo() {
 
         const data = await response.json()
         userInfo.value = data
+
+        editData.value = {
+            fname: data.first_name,
+            lname: data.last_name,
+            phone: data.phone_number,
+            address: data.address
+        }
     } catch (error) {
         console.error(error)
     }
 }
+
+async function updateProfile() {
+    try {
+        const response = await fetch('http://127.0.0.1:8000/api/profile/update', {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'Authorization': `Bearer ${localStorage.getItem('token')}`
+            },
+            body: JSON.stringify(editData.value)
+        })
+
+        if (!response.ok) {
+            throw new Error(`Error ${response.status}`)
+        }
+
+        const updated = await response.json()
+
+        // actualizamos el frontend
+        userInfo.value = updated.user  
+        editMode.value = false  
+
+        alert("Perfil actualizado con éxito")
+
+    } catch (error) {
+        console.error(error)
+        alert("Error al actualizar el perfil")
+    }
+}
+
 
 onMounted(() => {
     if (isLoggedIn.value) {
@@ -101,7 +148,31 @@ onMounted(() => {
             <p>Teléfono: {{ userInfo?.phone_number }}</p>
             <p>Dirección: {{ userInfo?.address }}</p>
             <p>E-mail: {{ userInfo?.email }}</p>
+
+            <button @click="editMode = !editMode">
+                {{ editMode ? 'Cancelar' : 'Editar perfil' }}
+            </button>
+
+            <div v-if="editMode" class="edit-form">
+
+                <label>Nombre</label>
+                <input v-model="editData.fname" type="text">
+
+                <label>Apellido</label>
+                <input v-model="editData.lname" type="text">
+
+                <label>Teléfono</label>
+                <input v-model="editData.phone" type="text">
+
+                <label>Dirección</label>
+                <input v-model="editData.address" type="text">
+
+                <button @click="updateProfile()">Guardar cambios</button>
+
+            </div>
+
         </div>
+
 
         <div class="account-preferences">
             <h2>Sobre tu cuenta</h2>
