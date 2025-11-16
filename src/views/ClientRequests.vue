@@ -1,4 +1,3 @@
-
 <script setup lang="ts">
   import { computed, ref, onMounted } from 'vue'
   import WorkRequestCard from '../components/ClientRequestCard.vue'
@@ -6,7 +5,7 @@
   import { useUserStore } from '@/stores/user'
 
   interface WorkRequest {
-      id: number
+      client_request_id: number
       title: string
       description: string
       budget: number
@@ -75,7 +74,7 @@
     <div v-if="loading">Cargando pedidos...</div>
     <div v-else>
       <div class="request-container">
-        <WorkRequestCard v-for="work in works" :key="work.id" :work="work" />
+        <WorkRequestCard v-for="work in works" :key="work.client_request_id" :work="work" />
       </div>
     </div>
   </div>

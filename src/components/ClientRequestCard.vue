@@ -1,14 +1,17 @@
 
 <script setup lang="ts">
-    interface Work {
-        title: string
-        description: string
-        budget: number
-    }
+  import { useRouter } from 'vue-router'
+  import { defineProps } from 'vue'
+  
 
-    const props = defineProps<{
-        work: Work
-    }>()
+  const props = defineProps<{ work: { client_request_id: number, title: string, description: string, budget: number } }>()
+  const router = useRouter()
+
+  function goToDetails() {
+    router.push(`/clientrequests/${props.work.client_request_id}`)
+  }
+
+
 </script>
 
 <template>
@@ -16,7 +19,7 @@
     <h3>{{ work.title }}</h3>
     <p>{{ work.description }}</p>
     <p><strong>Presupuesto:</strong> ${{ work.budget }}</p>
-    <!-- Add image, tags, buttons, etc. -->
+    <button @click="goToDetails">Ver más</button>
   </div>
 </template>
 
