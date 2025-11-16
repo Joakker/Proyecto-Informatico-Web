@@ -99,17 +99,17 @@
       min-height: 100vh; /* ocupa toda la altura */
     }
 
+    .main-content {
+      flex: 1; /* empuja el footer hacia abajo */
+    }
+
 </style>
 
 <style>
   html, body {
     margin: 0;
     padding: 0;
-    height: 100%;
-    background-color: white;
-  }
 
-  .main-content {
-    flex: 1; /* empuja el footer hacia abajo */
+    background-color: white;
   }
 </style>
