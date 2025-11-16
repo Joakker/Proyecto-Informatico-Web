@@ -111,48 +111,14 @@ onMounted(() => {
 
 
 <template>
-        <div class="profile-container">
-            <div class="profile-card">
-                <div class="pfp-column">
-                    <img alt="hola"></img>
-                </div>
-                <div class="info-column">
-                    <h3>{{ userInfo?.first_name + ' ' + userInfo?.last_name}}</h3>
-                </div>
+    <div class="profile-container">
+        <div class="profile-card">
+            <div class="pfp-column">
+                <img alt="hola"></img>
             </div>
-
-            <hr></hr>
-            
-            <template v-if="userType === 1">
-
-                <div class="user-type">
-                    <h3>Tu cuenta está configurada como CLIENTE</h3>
-                    <p>Si quieres cambiarla a MAESTRO, tendrás que registrarte de nuevo.</p>
-                </div>
-
-            </template>
-
-            <template v-else="userType === 2">
-                <div class="user-type">
-                    <h3>Tu cuenta está configurada como MAESTRO</h3>
-                    <p>Si quieres cambiarla a CLIENTE, tendrás que registrarte de nuevo.</p>
-                </div>
-            </template>
-
-            <hr></hr>
-
-            <div class="personal-info-container">
-                <h2>Datos personales</h2>
-                <p>Teléfono: {{ userInfo?.phone_number }}</p>
-                <p>Dirección: {{ userInfo?.address }}</p>
-                <p>E-mail: {{ userInfo?.email }}</p>
+            <div class="info-column">
+                <h3>{{ userInfo?.first_name + ' ' + userInfo?.last_name}}</h3>
             </div>
-
-            <div class="account-preferences">
-                <h2>Sobre tu cuenta</h2>
-                <p>Creación de cuenta: {{ new Date(userInfo?.created_at).toLocaleDateString('es-CL') }}</p>
-            </div>
-
         </div>
 
         <hr></hr>
@@ -216,7 +182,7 @@ onMounted(() => {
     </div>
 </template>
 
-<style scoped>
+<style>
 
     html, body {
         margin: 0;
