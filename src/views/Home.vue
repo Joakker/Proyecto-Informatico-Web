@@ -64,7 +64,8 @@
     <template v-if="isLoggedIn">
         <div class="title">
         <h1 v-if="userType === 1">Bienvenido, {{userInfo?.first_name}}</h1>
-        <h1 v-else-if="userType === 2">Bienvenido, {{ userInfo?.last_name }}</h1>
+        <h1 v-else-if="userType === 2">Bienvenido, {{ userInfo?.first_name }}</h1>
+        <h1 v-else-if="userType === 3">Bienvenido, {{ userInfo?.first_name }}</h1>
         <h1 v-else>Bienvenido a maestro chasquilla!</h1>
         </div>
 
@@ -79,6 +80,13 @@
             <h2>¿Buscas un trabajo?</h2>
             <div class="right-nav">
                 <router-link to="/clientrequests">Encuentra un cliente</router-link>
+            </div>
+        </div>
+
+        <div v-else-if="userType === 3" class="find-client">
+            <h2>Eres un moderador</h2>
+            <div class="right-nav">
+                <router-link to="/modpage">Revisa la tabla del moderador</router-link>
             </div>
         </div>
     </template>
