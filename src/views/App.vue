@@ -8,6 +8,10 @@
           <router-link to="/workerrequests">Trabajadores</router-link>
           <router-link to="/search-workers">Buscar Maestro</router-link>
 
+          <template v-if="isLoggedIn">
+            <router-link to="/modpage">Moderación</router-link>
+          </template>
+
         </div>
 
         <div class="right-nav">
@@ -42,7 +46,7 @@
 
 <script setup lang="ts">
     import { useUserStore } from '@/stores/user'
-    import { computed } from 'vue'
+    import { ref, computed } from 'vue'
     import { useRouter } from 'vue-router'
 
     const userStore = useUserStore()
@@ -51,10 +55,35 @@
 
     function logout() {
         userStore.logout()
-        localStorage.removeItem('user') // optional: clear persisted user
+        localStorage.removeItem('user') 
         localStorage.removeItem('token')
-        router.push('/')           // redirect to login page
+        router.push('/')           
     }
+
+    const userType = ref<number|null>(null)
+
+    async function getUserType() {
+        try {
+            const response = await fetch('http://127.0.0.1:8000/api/user/type', {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Authorization': `Bearer ${localStorage.getItem('token')}` // token from login
+            }
+            })
+
+            if (!response.ok) {
+            throw new Error(`Error ${response.status}`)
+            }
+
+            const data = await response.json()
+            userType.value = data.type
+            console.log('User type:', data.type)
+        } catch (error) {
+            console.error(error)
+        }
+    }
+
 </script>
 
 <style scoped>

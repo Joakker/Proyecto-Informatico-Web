@@ -9,6 +9,7 @@ import LogIn from '@/views/Log-in.vue'
 import Profile from '@/views/Profile.vue'
 import CreateClientRequest from '@/views/CreateClientRequest.vue'
 import ClientRequestDetail from '@/views/ClientRequestDetail.vue'
+import ModPage from '@/views/ModPage.vue'
 
 const routes = [
   {
@@ -60,9 +61,15 @@ const routes = [
   },
 
   {
-    path: '/search-workers', // la URL que usarás en el navegador
+    path: '/search-workers', 
     name: 'SearchWorkers',
     component: SearchWorkers
+  },
+
+  {
+    path: '/modpage',
+    name: 'ModPage',
+    component: ModPage
   }
 
 ]
