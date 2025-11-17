@@ -6,7 +6,30 @@ const router = useRouter()
 const fname = ref('')
 const lname = ref('')
 const phone = ref('')
-const address = ref('')
+const street = ref('')
+const city = ref('')
+const region = ref('')
+
+// lista de regiones válidas
+const regiones = [
+  'Arica y Parinacota',
+  'Tarapacá',
+  'Antofagasta',
+  'Atacama',
+  'Coquimbo',
+  'Valparaíso',
+  'Metropolitana',
+  'O’Higgins',
+  'Maule',
+  'Ñuble',
+  'Biobío',
+  'Araucanía',
+  'Los Ríos',
+  'Los Lagos',
+  'Aysén',
+  'Magallanes'
+]
+//const address = ref('')
 const email = ref('')
 const password = ref('')
 const pick = ref<number | null>(null)
@@ -14,10 +37,12 @@ const cliente = 1
 const maestro = 2
 
 async function CreateAccount() {
-  if (!fname.value || !lname.value || !phone.value || !address.value || !email.value || !password.value || !pick.value) {
+  if (!fname.value || !lname.value || !phone.value || !street.value || !city.value || !region.value || !email.value || !password.value || !pick.value) {
     alert('Por favor completa todos los campos.')
     return
   }
+
+  const address = `${street.value}, ${city.value}, ${region.value}`
 
   const url = "http://127.0.0.1:8000/api/signup"
   try {
@@ -28,7 +53,7 @@ async function CreateAccount() {
         fname: fname.value,
         lname: lname.value,
         phone: phone.value,
-        address: address.value,
+        address: address,
         email: email.value,
         password: password.value,
         type: pick.value
@@ -61,7 +86,12 @@ async function CreateAccount() {
         <input v-model="fname" type="text" class="form-control mb-3" placeholder="Nombre">
         <input v-model="lname" type="text" class="form-control mb-3" placeholder="Apellido">
         <input v-model="phone" type="text" class="form-control mb-3" placeholder="Teléfono">
-        <input v-model="address" type="text" class="form-control mb-3" placeholder="Dirección">
+        <input v-model="street" type="text" class="form-control mb-3" placeholder="Calle">
+        <input v-model="city" type="text" class="form-control mb-3" placeholder="Ciudad">
+        <select v-model="region" class="form-control mb-3">
+          <option value="">Seleccione una región</option>
+          <option v-for="r in regiones" :key="r" :value="r">{{ r }}</option>
+        </select>
         <input v-model="email" type="email" class="form-control mb-3" placeholder="Correo electrónico">
         <input v-model="password" type="password" class="form-control mb-3" placeholder="Contraseña">
 

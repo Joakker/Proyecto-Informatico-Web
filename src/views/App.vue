@@ -6,6 +6,8 @@
           <router-link to="/">Home</router-link>
           <router-link to="/clientrequests">Trabajos</router-link>
           <router-link to="/workerrequests">Trabajadores</router-link>
+          <router-link to="/search-workers">Buscar Maestro</router-link>
+
         </div>
 
         <div class="right-nav">

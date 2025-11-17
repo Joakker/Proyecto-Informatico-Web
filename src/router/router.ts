@@ -4,6 +4,7 @@ import App from '../views/App.vue'
 import Home from '../views/Home.vue'
 import ClientRequests from '../views/ClientRequests.vue'
 import WorkerRequests from '@/views/WorkerRequests.vue'
+import SearchWorkers from '@/views/SearchWorkers.vue'
 import LogIn from '@/views/Log-in.vue'
 import Profile from '@/views/Profile.vue'
 import CreateClientRequest from '@/views/CreateClientRequest.vue'
@@ -56,6 +57,12 @@ const routes = [
     path: '/clientrequests/:id',
     name: 'ClientRequestDetail',
     component: ClientRequestDetail
+  },
+
+  {
+    path: '/search-workers', // la URL que usarás en el navegador
+    name: 'SearchWorkers',
+    component: SearchWorkers
   }
 
 ]
