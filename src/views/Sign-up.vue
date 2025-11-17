@@ -12,6 +12,7 @@ const password = ref('')
 const pick = ref<number | null>(null)
 const cliente = 1
 const maestro = 2
+const moderador = 3
 
 async function CreateAccount() {
   if (!fname.value || !lname.value || !phone.value || !address.value || !email.value || !password.value || !pick.value) {
@@ -85,6 +86,17 @@ async function CreateAccount() {
             <i class="bi bi-hammer fs-1 text-primary"></i>
             <div class="fw-bold mt-2">Trabajador</div>
             <div class="text-muted small">Necesito encontrar trabajo</div>
+          </div>
+
+          <!-- Esta es para crear un moderador-->
+          <div 
+            class="card p-3 text-center w-50 ms-2 cursor-pointer"
+            :class="pick === moderador ? 'border-primary shadow' : 'border-light'"
+            @click="pick = moderador"
+          >
+            <i class="bi bi-android2 fs-1 text-primary"></i>
+            <div class="fw-bold mt-2">Moderador</div>
+            <div class="text-muted small">Opción super secreta para ser moderador</div>
           </div>
         </div>
 
