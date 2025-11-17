@@ -10,6 +10,7 @@ const userType = ref<number|null>(null)
 const userInfo = ref();
 //para editar perfil:
 const editMode = ref(false)
+const isEditingCategories = ref(false)
 
 const editData = ref({
     fname: '',
@@ -17,6 +18,29 @@ const editData = ref({
     phone: '',
     address: ''
 })
+
+interface Category {
+  category_id: number;
+  name: string;
+  description?: string;
+}
+
+const categories = ref<Category[]>([]);               // lista de categorías
+const selectedCategories = ref<number[]>([]) 
+
+interface WorkerCategory {
+    category_id: number;
+    name: string;
+}
+
+function loadWorkerCategories() {
+    const worker = userInfo.value?.workers; // ahora es un objeto
+    if (worker && worker.categories) {
+        selectedCategories.value = worker.categories.map((c: Category) => c.category_id);
+        console.log("Categorías seleccionadas:", selectedCategories.value);
+    }
+}
+
 
 async function getUserType() {
     try {
@@ -55,7 +79,9 @@ async function getUserInfo() {
         }
 
         const data = await response.json()
+        console.log("Respuesta de /api/user:", data) 
         userInfo.value = data
+        loadWorkerCategories()
 
         editData.value = {
             fname: data.first_name,
@@ -98,13 +124,50 @@ async function updateProfile() {
     }
 }
 
+async function getCategories() {
+    try {
+        const response = await fetch("http://127.0.0.1:8000/api/categories");
+        if (!response.ok) throw new Error("Error obteniendo categorías");
+
+        categories.value = await response.json();
+    } catch (err) {
+        console.error(err);
+    }
+}
+
+async function updateWorkerCategories() {
+    try {
+        const response = await fetch("http://127.0.0.1:8000/api/worker/categories", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${localStorage.getItem('token')}`
+            },
+            body: JSON.stringify({
+                categories: selectedCategories.value
+            })
+        });
+
+        if (!response.ok) throw new Error(`Error ${response.status}`);
+
+        alert("Categorías actualizadas correctamente");
+        
+        await getUserInfo();
+
+        isEditingCategories.value = false;
+
+    } catch (error) {
+        console.error(error);
+        alert("Error al actualizar categorías");
+    }
+}
 
 onMounted(() => {
     if (isLoggedIn.value) {
         getUserType();
         getUserInfo();
+        getCategories();
     }
-    
 })
 
 </script>
@@ -140,7 +203,6 @@ onMounted(() => {
             </div>
 
         </template>
-
         <hr></hr>
 
         <div class="personal-info-container">
@@ -173,6 +235,53 @@ onMounted(() => {
 
         </div>
 
+        <template v-if="userType === 2">
+            <div class="categories-container">
+                <h2>Tus categorías de trabajo</h2>
+
+                <!-- ver categorías del maestro -->
+                <div v-if="!isEditingCategories">
+                    <ul>
+                        <li 
+                            v-for="cat in userInfo?.workers?.categories" 
+                            :key="cat.category_id"
+                        >
+                            {{ cat.name }}
+                        </li>
+                    </ul>
+
+                    <button @click="isEditingCategories = true">
+                        Editar / Agregar Categorías
+                    </button>
+                </div>
+
+                <!-- edición-->
+                <div v-else>
+                    <div class="category-list">
+                        <label 
+                            v-for="cat in categories" 
+                            :key="cat.category_id"
+                            style="display: flex; align-items: center; gap: 6px; margin-bottom: 6px;"
+                        >
+                            <input 
+                                type="checkbox"
+                                v-model="selectedCategories"
+                                :value="cat.category_id"
+                            >
+                            {{ cat.name }}
+                        </label>
+                    </div>
+
+                    <button @click="updateWorkerCategories">
+                        Guardar Categorías
+                    </button>
+
+                    <button @click="isEditingCategories = false" style="margin-left: 10px;">
+                        Cancelar
+                    </button>
+                </div>
+            </div>
+        </template>
 
         <div class="account-preferences">
             <h2>Sobre tu cuenta</h2>
