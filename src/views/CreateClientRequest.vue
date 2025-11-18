@@ -12,14 +12,13 @@ const country = ref('Chile')
 const postalCode = ref('')
 
 const router = useRouter()
-// Construir la dirección completa
+
 const fullAddress = computed(() => {
   return `${street.value}, ${city.value}, ${region.value}, ${country.value}, ${postalCode.value}`
 })
 
-// URL para Google Maps Embed API
 const mapsEmbedUrl = computed(() => {
-  const apiKey = ' '
+  const apiKey = ' ' // tu API key de Google Maps
   return `https://www.google.com/maps/embed/v1/place?key=${apiKey}&q=${encodeURIComponent(fullAddress.value)}`
 })
 
@@ -39,91 +38,91 @@ async function submitJob() {
             city: city.value,
             region: region.value,
         }),
-        }
-    )
+    })
     router.push('/clientrequests')
 }
-
 </script>
 
 <template>
-  <form @submit.prevent="submitJob">
-    <h2>Publicar trabajo</h2>
+  <div class="container my-5">
+    <div class="card shadow-sm p-4">
+      <h2 class="mb-4 text-center">Publicar trabajo</h2>
+      <form @submit.prevent="submitJob" class="row g-3">
 
-    <label>Título del trabajo</label>
-    <input v-model="title" type="text" required />
+        <!-- Título y Descripción -->
+        <div class="col-12">
+          <label class="form-label">Título del trabajo</label>
+          <input v-model="title" type="text" class="form-control" required />
+        </div>
 
-    <label>Descripción</label>
-    <textarea v-model="description" rows="4" required></textarea>
+        <div class="col-12">
+          <label class="form-label">Descripción</label>
+          <textarea v-model="description" rows="4" class="form-control" required></textarea>
+        </div>
 
-    <label>Presupuesto (CLP)</label>
-    <input v-model.number="budget" type="number" min="0" required />
+        <div class="col-md-6">
+          <label class="form-label">Presupuesto (CLP)</label>
+          <input v-model.number="budget" type="number" min="0" class="form-control" required />
+        </div>
 
-    <h3>Dirección</h3>
-    <label>Calle</label>
-    <input v-model="street" type="text" required />
+        <!-- Dirección -->
+        <h4 class="mt-3">Dirección</h4>
 
-    <label>Ciudad</label>
-    <input v-model="city" type="text" required />
+        <div class="col-md-6">
+          <label class="form-label">Calle</label>
+          <input v-model="street" type="text" class="form-control" required />
+        </div>
 
-    <label>Región</label>
-    <input v-model="region" type="text" required />
+        <div class="col-md-6">
+          <label class="form-label">Ciudad</label>
+          <input v-model="city" type="text" class="form-control" required />
+        </div>
 
-    <label>País</label>
-    <input v-model="country" type="text" required />
+        <div class="col-md-6">
+          <label class="form-label">Región</label>
+          <input v-model="region" type="text" class="form-control" required />
+        </div>
 
-    <label>Código postal</label>
-    <input v-model="postalCode" type="text" />
+        <div class="col-md-6">
+          <label class="form-label">País</label>
+          <input v-model="country" type="text" class="form-control" required />
+        </div>
 
-    <div v-if="street || city || region" class="form-google-maps">
-        <iframe
-        :src="mapsEmbedUrl"
-        width="600"
-        height="450"
-        style="border:0;"
-        allowfullscreen="false"
-        loading="lazy"
-        referrerpolicy="no-referrer-when-downgrade">
-        </iframe>
+        <div class="col-md-6">
+          <label class="form-label">Código postal</label>
+          <input v-model="postalCode" type="text" class="form-control" />
+        </div>
+
+        <!-- Google Maps -->
+        <div v-if="street || city || region" class="col-12 text-center mt-3">
+          <iframe
+            :src="mapsEmbedUrl"
+            width="100%"
+            height="300"
+            style="border:0;"
+            allowfullscreen
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade">
+          </iframe>
+        </div>
+
+        <!-- Botón enviar -->
+        <div class="col-12 text-center mt-4">
+          <button type="submit" class="btn btn-primary btn-lg">Publicar trabajo</button>
+        </div>
+
+      </form>
     </div>
-
-    <button type="submit">Publicar trabajo</button>
-  </form>
-
+  </div>
 </template>
 
 <style scoped>
-
-h2 {
-    margin-top: 2rem;
+.card {
+  border-radius: 12px;
 }
 
-form {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  max-width: 600px;
-  margin: auto;
-}
-input, textarea {
-  padding: 0.5rem;
-  font-size: 1rem;
-}
-button {
-    margin-bottom: 2rem;
-    padding: 0.75rem;
-    font-weight: bold;
-    background-color: #2c3e50;
-    color: white;
-    border: none;
-    cursor: pointer;
-}
-iframe {
-  margin-top: 1rem;
-}
-.form-google-maps {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+h2, h4 {
+  font-weight: 600;
 }
 </style>
+

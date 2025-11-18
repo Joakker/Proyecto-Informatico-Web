@@ -36,7 +36,6 @@ async function EnterAccount() {
     localStorage.setItem('user', JSON.stringify(result.user))
     localStorage.setItem('token', result.token)
 
-    console.log(result);
     router.push('/')
   } catch (error) {
     console.error(error);
@@ -47,34 +46,55 @@ async function EnterAccount() {
 </script>
 
 <template>
-  <h1>Registro</h1>
+  <div class="container d-flex justify-content-center align-items-center vh-100">
+    <div class="card shadow p-4" style="max-width: 400px; width: 100%;">
+      <h2 class="text-center mb-4">Iniciar Sesión🛠️</h2>
 
-  <div class="form">
-    <form @submit.prevent="EnterAccount">
+      <form @submit.prevent="EnterAccount">
+        <div class="form-floating mb-3">
+          <input
+            v-model="email"
+            type="email"
+            class="form-control"
+            id="email"
+            placeholder="Correo electrónico"
+            required
+          >
+          <label for="email">Correo electrónico</label>
+        </div>
 
-      <label for="email">Correo electrónico</label><br>
-      <input v-model="email" type="email" id="email" name="email"><br>
+        <div class="form-floating mb-3">
+          <input
+            v-model="password"
+            type="password"
+            class="form-control"
+            id="password"
+            placeholder="Contraseña"
+            required
+          >
+          <label for="password">Contraseña</label>
+        </div>
 
-      <label for="password">Contraseña</label><br>
-      <input v-model="password" type="password" id="password" name="password"><br>
+        <button type="submit" class="btn btn-primary w-100 mb-3" :disabled="loading">
+          {{ loading ? 'Cargando...' : 'Iniciar sesión' }}
+        </button>
 
-      <hr></hr>
-
-      <button type="submit" :disabled="loading">
-        {{ loading ? 'Cargando...' : 'Iniciar sesión' }}
-      </button>
-    </form>
+        <p class="text-center text-muted mb-0">
+          ¿No tienes cuenta?
+          <router-link to="/signup" class="text-decoration-none">Regístrate</router-link>
+        </p>
+      </form>
+    </div>
   </div>
 </template>
 
 <style scoped>
-  .form {
-    display: flex;
-    justify-content: center;
-  }
-
-  h1 {
-    display: flex;
-    justify-content: center;
-  }
+.card {
+  border-radius: 1rem;
+  transition: transform 0.2s;
+}
+.card:hover {
+  transform: translateY(-3px);
+}
 </style>
+

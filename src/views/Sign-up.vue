@@ -78,7 +78,7 @@ async function CreateAccount() {
 
 <template>
   <div class="container mt-5">
-    <h1 class="text-center mb-4">Registro Maestro Chasquilla</h1>
+    <h1 class="text-center mb-4">Registro🛠️</h1>
 
     <div class="card p-4 shadow mx-auto" style="max-width: 500px;">
       <form @submit.prevent="CreateAccount">

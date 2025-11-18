@@ -1,6 +1,6 @@
 <template>
   <div class="container mt-5">
-    <h1 class="text-center mb-4">Buscar Maestros</h1>
+    <h1 class="text-center mb-4">Buscar maestros</h1>
 
     <div class="card p-4 shadow mx-auto mb-4" style="max-width: 600px;">
       <!-- Select de categorías -->

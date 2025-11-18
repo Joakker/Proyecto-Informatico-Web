@@ -2,7 +2,6 @@
 import { onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
 
-
 interface User {
   id: number
   first_name: string   
@@ -41,24 +40,42 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div v-if="request" class="request">
-    <h2>{{ request.title }}</h2>
-    <p>Solicitado por {{ request.client?.user?.first_name }} {{ request.client?.user?.last_name }}.</p>
-    <p>Calificación: {{ request.client?.user?.score }}/5</p>
-    <p>{{ request.description }}</p>
-    <p>Presupuesto: ${{ request.budget }}</p>
-    <p>Dirección: {{ request.address }}</p>
-    <h3>Información de contacto</h3>
-    <p>Número de teléfono: {{ request.client?.user?.phone_number }}</p>
-    <p>Correo electrónico: {{ request.client?.user?.email }}</p>
+  <div class="container my-5" v-if="request">
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <h2 class="card-title mb-3">{{ request.title }}</h2>
+
+        <p class="text-muted">
+          <strong>Solicitado por:</strong> {{ request.client?.user?.first_name }} {{ request.client?.user?.last_name }}
+          <span class="badge bg-primary ms-2">Calificación: {{ request.client?.user?.score }}/5</span>
+        </p>
+
+        <p class="card-text">{{ request.description }}</p>
+
+        <ul class="list-group list-group-flush mb-3">
+          <li class="list-group-item"><strong>Presupuesto:</strong> ${{ request.budget }}</li>
+          <li class="list-group-item"><strong>Dirección:</strong> {{ request.address }}</li>
+        </ul>
+
+        <h5>Información de contacto</h5>
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item"><strong>Teléfono:</strong> {{ request.client?.user?.phone_number }}</li>
+          <li class="list-group-item"><strong>Correo:</strong> {{ request.client?.user?.email }}</li>
+        </ul>
+
+        <div class="mt-4 d-flex justify-content-center">
+          <router-link to="/clientrequests" class="btn btn-secondary">Volver a la lista</router-link>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
-<style>
-
-.request {
-  align-items: center;
-  justify-items: center;
+<style scoped>
+.container {
+  max-width: 700px;
 }
-
+.card-title {
+  font-weight: 600;
+}
 </style>
