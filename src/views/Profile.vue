@@ -2,13 +2,11 @@
 import { useUserStore } from '@/stores/user'
 import { computed, onMounted, ref } from 'vue'
 
-
 const userStore = useUserStore()
 const isLoggedIn = computed(() => userStore.user !== null)
 
 const userType = ref<number|null>(null)
 const userInfo = ref();
-//para editar perfil:
 const editMode = ref(false)
 const isEditingCategories = ref(false)
 
@@ -25,73 +23,51 @@ interface Category {
   description?: string;
 }
 
-const categories = ref<Category[]>([]);               // lista de categorías
-const selectedCategories = ref<number[]>([]) 
-
-interface WorkerCategory {
-    category_id: number;
-    name: string;
-}
+const categories = ref<Category[]>([])
+const selectedCategories = ref<number[]>([])
 
 function loadWorkerCategories() {
-    const worker = userInfo.value?.workers; // ahora es un objeto
+    const worker = userInfo.value?.workers;
     if (worker && worker.categories) {
         selectedCategories.value = worker.categories.map((c: Category) => c.category_id);
-        console.log("Categorías seleccionadas:", selectedCategories.value);
     }
 }
-
 
 async function getUserType() {
     try {
         const response = await fetch('http://127.0.0.1:8000/api/user/type', {
-        method: 'GET',
-        headers: {
-            'Accept': 'application/json',
-            'Authorization': `Bearer ${localStorage.getItem('token')}` // token from login
-        }
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Authorization': `Bearer ${localStorage.getItem('token')}`
+            }
         })
-
-        if (!response.ok) {
-        throw new Error(`Error ${response.status}`)
-        }
-
+        if (!response.ok) throw new Error(`Error ${response.status}`)
         const data = await response.json()
-        console.log("Datos recibidos de /api/user/type:", data)
         userType.value = data.type
-    } catch (error) {
-        console.error(error)
-    }
+    } catch (error) { console.error(error) }
 }
 
 async function getUserInfo() {
     try {
         const response = await fetch('http://127.0.0.1:8000/api/user', {
-        method: 'GET',
-        headers: {
-            'Accept': 'application/json',
-            'Authorization': `Bearer ${localStorage.getItem('token')}` // token from login
-        }
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Authorization': `Bearer ${localStorage.getItem('token')}`
+            }
         })
-
-        if (!response.ok) {
-        throw new Error(`Error ${response.status}`)
-        }
-
+        if (!response.ok) throw new Error(`Error ${response.status}`)
         const data = await response.json()
-        console.log("Respuesta de /api/user:", data) 
         userInfo.value = data
         loadWorkerCategories()
-
         editData.value = {
             fname: data.first_name,
             lname: data.last_name,
             phone: data.phone_number,
             address: data.address
         }
-    } catch (error) {
-        console.error(error)
-    }
+    } catch (error) { console.error(error) }
 }
 
 async function updateProfile() {
@@ -105,19 +81,11 @@ async function updateProfile() {
             },
             body: JSON.stringify(editData.value)
         })
-
-        if (!response.ok) {
-            throw new Error(`Error ${response.status}`)
-        }
-
+        if (!response.ok) throw new Error(`Error ${response.status}`)
         const updated = await response.json()
-
-        // actualizamos el frontend
-        userInfo.value = updated.user  
-        editMode.value = false  
-
+        userInfo.value = updated.user
+        editMode.value = false
         alert("Perfil actualizado con éxito")
-
     } catch (error) {
         console.error(error)
         alert("Error al actualizar el perfil")
@@ -127,12 +95,9 @@ async function updateProfile() {
 async function getCategories() {
     try {
         const response = await fetch("http://127.0.0.1:8000/api/categories");
-        if (!response.ok) throw new Error("Error obteniendo categorías");
-
+        if (!response.ok) throw new Error("Error obteniendo categorías")
         categories.value = await response.json();
-    } catch (err) {
-        console.error(err);
-    }
+    } catch (err) { console.error(err); }
 }
 
 async function updateWorkerCategories() {
@@ -143,207 +108,140 @@ async function updateWorkerCategories() {
                 "Content-Type": "application/json",
                 "Authorization": `Bearer ${localStorage.getItem('token')}`
             },
-            body: JSON.stringify({
-                categories: selectedCategories.value
-            })
-        });
-
-        if (!response.ok) throw new Error(`Error ${response.status}`);
-
-        alert("Categorías actualizadas correctamente");
-        
-        await getUserInfo();
-
-        isEditingCategories.value = false;
-
+            body: JSON.stringify({ categories: selectedCategories.value })
+        })
+        if (!response.ok) throw new Error(`Error ${response.status}`)
+        alert("Categorías actualizadas correctamente")
+        await getUserInfo()
+        isEditingCategories.value = false
     } catch (error) {
-        console.error(error);
-        alert("Error al actualizar categorías");
+        console.error(error)
+        alert("Error al actualizar categorías")
     }
 }
 
 onMounted(() => {
     if (isLoggedIn.value) {
-        getUserType();
-        getUserInfo();
-        getCategories();
+        getUserType()
+        getUserInfo()
+        getCategories()
     }
 })
-
 </script>
 
-
 <template>
-    <div class="profile-container">
-        <div class="profile-card">
-            <div class="pfp-column">
-                <img alt="hola"></img>
-            </div>
-            <div class="info-column">
-                <h3>{{ userInfo?.first_name + ' ' + userInfo?.last_name}}</h3>
+<div class="container py-5">
+
+    <!-- Perfil principal -->
+    <div class="row g-4 mb-4">
+
+        <!-- Perfil principal -->
+        <div class="col-md-6">
+            <div class="card shadow-sm p-3 h-100">
+                <div class="row g-0 align-items-center">
+                <div class="col-4 text-center">
+                    <img src="https://via.placeholder.com/120" class="rounded-circle img-fluid" alt="Perfil">
+                </div>
+                <div class="col-8">
+                    <h3>{{ userInfo?.first_name + ' ' + userInfo?.last_name }}</h3>
+                    <p class="text-muted">{{ userInfo?.email }}</p>
+                </div>
+                </div>
             </div>
         </div>
 
-        <hr></hr>
-
-        <template v-if="userType === 1">
-
-            <div class="user-type">
-                <h3>Tu cuenta está configurada como CLIENTE</h3>
-                <p>Si quieres cambiarla a MAESTRO, tendrás que registrarte de nuevo.</p>
+        <!-- Tipo de usuario -->
+        <div class="col-md-6" v-if="userType">
+            <div class="card shadow-sm p-3 text-center h-100">
+                <h5 v-if="userType === 1">Tu cuenta está configurada como CLIENTE</h5>
+                <h5 v-else-if="userType === 2">Tu cuenta está configurada como MAESTRO</h5>
+                <p>Si quieres cambiarla tendrás que registrarte de nuevo.</p>
             </div>
+        </div>
 
-        </template>
+  </div>
 
-        <template v-if="userType === 2">
-
-            <div class="user-type">
-                <h3>Tu cuenta está configurada como MAESTRO</h3>
-                <p>Si quieres cambiarla a CLIENTE, tendrás que registrarte de nuevo.</p>
-            </div>
-
-        </template>
-        <hr></hr>
-
-        <div class="personal-info-container">
-            <h2>Datos personales</h2>
-            <p>Teléfono: {{ userInfo?.phone_number }}</p>
-            <p>Dirección: {{ userInfo?.address }}</p>
-            <p>E-mail: {{ userInfo?.email }}</p>
-
-            <button @click="editMode = !editMode">
+    <!-- Datos personales -->
+    <div class="card mb-4 shadow-sm p-3">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h4>Datos personales</h4>
+            <button class="btn btn-outline-primary btn-sm" @click="editMode = !editMode">
                 {{ editMode ? 'Cancelar' : 'Editar perfil' }}
             </button>
-
-            <div v-if="editMode" class="edit-form">
-
-                <label>Nombre</label>
-                <input v-model="editData.fname" type="text">
-
-                <label>Apellido</label>
-                <input v-model="editData.lname" type="text">
-
-                <label>Teléfono</label>
-                <input v-model="editData.phone" type="text">
-
-                <label>Dirección</label>
-                <input v-model="editData.address" type="text">
-
-                <button @click="updateProfile()">Guardar cambios</button>
-
-            </div>
-
         </div>
-
-        <template v-if="userType === 2">
-            <div class="categories-container">
-                <h2>Tus categorías de trabajo</h2>
-
-                <!-- ver categorías del maestro -->
-                <div v-if="!isEditingCategories">
-                    <ul>
-                        <li 
-                            v-for="cat in userInfo?.workers?.categories" 
-                            :key="cat.category_id"
-                        >
-                            {{ cat.name }}
-                        </li>
-                    </ul>
-
-                    <button @click="isEditingCategories = true">
-                        Editar / Agregar Categorías
-                    </button>
-                </div>
-
-                <!-- edición-->
-                <div v-else>
-                    <div class="category-list">
-                        <label 
-                            v-for="cat in categories" 
-                            :key="cat.category_id"
-                            style="display: flex; align-items: center; gap: 6px; margin-bottom: 6px;"
-                        >
-                            <input 
-                                type="checkbox"
-                                v-model="selectedCategories"
-                                :value="cat.category_id"
-                            >
-                            {{ cat.name }}
-                        </label>
-                    </div>
-
-                    <button @click="updateWorkerCategories">
-                        Guardar Categorías
-                    </button>
-
-                    <button @click="isEditingCategories = false" style="margin-left: 10px;">
-                        Cancelar
-                    </button>
-                </div>
-            </div>
-        </template>
-
-        <div class="account-preferences">
-            <h2>Sobre tu cuenta</h2>
-            <p>Creación de cuenta: {{ new Date(userInfo?.created_at).toLocaleDateString('es-CL') }}</p>
+        <div v-if="!editMode">
+            <p><strong>Teléfono:</strong> {{ userInfo?.phone_number }}</p>
+            <p><strong>Dirección:</strong> {{ userInfo?.address }}</p>
+            <p><strong>Email:</strong> {{ userInfo?.email }}</p>
         </div>
-
+        <div v-else class="row g-3">
+            <div class="col-md-6">
+                <label class="form-label">Nombre</label>
+                <input v-model="editData.fname" type="text" class="form-control">
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">Apellido</label>
+                <input v-model="editData.lname" type="text" class="form-control">
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">Teléfono</label>
+                <input v-model="editData.phone" type="text" class="form-control">
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">Dirección</label>
+                <input v-model="editData.address" type="text" class="form-control">
+            </div>
+            <div class="col-12 mt-3">
+                <button class="btn btn-success" @click="updateProfile">Guardar cambios</button>
+            </div>
+        </div>
     </div>
+
+    <!-- Categorías (solo maestro) -->
+    <div v-if="userType === 2" class="card mb-4 shadow-sm p-3">
+        <h4>Tus categorías de trabajo</h4>
+        <div v-if="!isEditingCategories">
+            <ul class="list-group mb-3">
+                <li class="list-group-item" v-for="cat in userInfo?.workers?.categories" :key="cat.category_id">
+                    {{ cat.name }}
+                </li>
+            </ul>
+            <button class="btn btn-outline-primary btn-sm" @click="isEditingCategories = true">
+                Editar / Agregar Categorías
+            </button>
+        </div>
+        <div v-else class="mb-3">
+            <div class="form-check" v-for="cat in categories" :key="cat.category_id">
+                <input class="form-check-input" type="checkbox" :value="cat.category_id" v-model="selectedCategories">
+                <label class="form-check-label">{{ cat.name }}</label>
+            </div>
+            <div class="mt-3">
+                <button class="btn btn-success btn-sm" @click="updateWorkerCategories">Guardar Categorías</button>
+                <button class="btn btn-secondary btn-sm ms-2" @click="isEditingCategories = false">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Información adicional -->
+    <div class="card shadow-sm p-3">
+        <h4>Sobre tu cuenta</h4>
+        <p>Creación de cuenta: {{ new Date(userInfo?.created_at).toLocaleDateString('es-CL') }}</p>
+    </div>
+
+</div>
 </template>
 
-<style>
+<style scoped>
+body {
+    background-color: #f8f9fa;
+}
 
-    html, body {
-        margin: 0;
-        padding: 0;
+.card {
+    border-radius: 10px;
+}
 
-        background-color: yellow;
-    }
-
-    .profile-container {
-        background-color: white;
-        margin: 6rem;
-        border-radius: 10px;
-        display: block;
-        border-width: 0.3rem;
-        border-style: solid;
-        border-color: gray;
-    }
-
-    .profile-card {
-        display: flex;
-        justify-content: space-around;
-        flex-direction: row;
-        margin: 4rem;
-        border-width: 0.1rem;
-        border-style: solid;
-        border-color: gray;
-        border-radius: 5px;
-    }
-
-    .pfp-column {
-        display: flex;
-        justify-content: center; /* horizontal */
-        align-items: center;     /* vertical */
-    }
-
-    .user-type {
-        display: flex;
-        align-items: center;
-        flex-direction: column;
-        margin: 4rem;
-        border-width: 0.1rem;
-        border-style: solid;
-        border-color: gray;
-        border-radius: 5px;
-    }
-
-    .personal-info-container {
-        margin: 4rem;
-    }
-
-    .account-preferences {
-        margin: 4rem;
-    }
-
+img {
+    max-width: 120px;
+    max-height: 120px;
+}
 </style>
