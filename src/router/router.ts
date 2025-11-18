@@ -10,6 +10,7 @@ import Profile from '@/views/Profile.vue'
 import CreateClientRequest from '@/views/CreateClientRequest.vue'
 import ClientRequestDetail from '@/views/ClientRequestDetail.vue'
 import ModPage from '@/views/ModPage.vue'
+import SupportChat from '@/views/SupportChat.vue'
 
 const routes = [
   {
@@ -70,6 +71,12 @@ const routes = [
     path: '/modpage',
     name: 'ModPage',
     component: ModPage
+  },
+
+  {
+    path: '/support',
+    name: 'Support',
+    component: SupportChat
   }
 
 ]
