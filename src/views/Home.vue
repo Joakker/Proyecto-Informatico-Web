@@ -61,80 +61,81 @@
 </script>
 
 <template>
-    <template v-if="isLoggedIn">
-        <div class="title">
-        <h1 v-if="userType === 1">Bienvenido, {{userInfo?.first_name}}</h1>
-        <h1 v-else-if="userType === 2">Bienvenido, {{ userInfo?.first_name }}</h1>
-        <h1 v-else-if="userType === 3">Bienvenido, {{ userInfo?.first_name }}</h1>
-        <h1 v-else>Bienvenido a maestro chasquilla!</h1>
-        </div>
+  <div class="container py-5 d-flex justify-content-center">
+    <!-- Card principal -->
+    <div class="card shadow-lg p-5" style="max-width: 1000px; width: 100%;">
 
-        <div v-if="userType === 1" class="find-client">
-            <h2>¿Buscas un especialista?</h2>
-            <div class="right-nav">
-                <router-link to="/workerrequests">Encuentra uno aquí</router-link>
-            </div>
-        </div>
+      <!-- Bienvenida -->
+      <div class="text-center mb-4">
+        <h1 v-if="isLoggedIn">
+          Bienvenido, {{ userInfo?.first_name || 'Usuario' }} ✨
+        </h1>
+        <h1 v-else>✨Bienvenido a Maestro Chasquilla✨</h1>
+      </div>
 
-        <div v-else-if="userType === 2" class="find-client">
-            <h2>¿Buscas un trabajo?</h2>
-            <div class="right-nav">
-                <router-link to="/clientrequests">Encuentra un cliente</router-link>
-            </div>
-        </div>
+      <!-- Secciones según tipo de usuario -->
+      <div class="d-flex flex-column gap-3">
+        <template v-if="isLoggedIn">
+          <div v-if="userType === 1" class="text-center p-3 border rounded">
+            <h3>🔍¿Buscas un especialista?</h3>
+            <router-link to="/workerrequests" class="btn btn-primary mt-2">
+              Encuentra uno aquí
+            </router-link>
+          </div>
 
-        <div v-else-if="userType === 3" class="find-client">
-            <h2>Eres un moderador</h2>
-            <div class="right-nav">
-                <router-link to="/modpage">Revisa la tabla del moderador</router-link>
-            </div>
-        </div>
-    </template>
-    <template v-else>
-        <div class="title">
-            <h1>Bienvenido a maestro chasquilla!</h1>
-        </div>
-        <div class="register-ask">
-            <h2>¿Aún no tienes cuenta?</h2>
-            <div class="right-nav">
-                <router-link to="/signup">¡Regístrate!</router-link>
-            </div>
-        </div>
+          <div v-else-if="userType === 2" class="text-center p-3 border rounded">
+            <h3>💼¿Buscas un trabajo?</h3>
+            <router-link to="/clientrequests" class="btn btn-primary mt-2">
+              Encuentra un cliente
+            </router-link>
+          </div>
 
-        <div class="find-client">
-            <h2>¿Buscas un trabajo?</h2>
-            <div class="right-nav">
-                <router-link to="/clientrequests">Encuentra un cliente</router-link>
-            </div>
-        </div>
-        <div class="find-client">
-            <h2>¿Buscas un especialista?</h2>
-            <div class="right-nav">
-                <router-link to="/workerrequests">Encuentra uno aquí</router-link>
-            </div>
-        </div>
-    </template>
+          <div v-else-if="userType === 3" class="text-center p-3 border rounded">
+            <h3>Eres un moderador🛠️</h3>
+            <router-link to="/modpage" class="btn btn-warning mt-2">
+              Revisa la tabla del moderador
+            </router-link>
+          </div>
+        </template>
 
+        <template v-else>
+          <div class="text-center p-3 border rounded">
+            <h3>🚀¿Aún no tienes cuenta?</h3>
+            <router-link to="/signup" class="btn btn-primary mt-2">
+              ¡Regístrate!
+            </router-link>
+          </div>
+
+          <div class="text-center p-3 border rounded">
+            <h3>💼¿Buscas un trabajo?</h3>
+            <router-link to="/clientrequests" class="btn btn-primary mt-2">
+              Encuentra un cliente
+            </router-link>
+          </div>
+
+          <div class="text-center p-3 border rounded">
+            <h3>🔍¿Buscas un especialista?</h3>
+            <router-link to="/workerrequests" class="btn btn-primary mt-2">
+              Encuentra uno aquí
+            </router-link>
+          </div>
+        </template>
+      </div>
+    </div>
+  </div>
 </template>
 
 <style scoped>
-    .title {
-        display: flex;
-        justify-content: center;
-    }
-    
-    .register-ask {
-        display:flex;
-        align-items: center;
-        flex-direction: column;
-        
-    }
+body {
+  background-color: #f0f2f5;
+}
 
-    .find-client {
-        display:flex;
-        align-items: center;
-        flex-direction: column;
-        
-    }
+/* Opcional: bordes y sombras más suaves para la card */
+.card {
+  border-radius: 15px;
+}
 
+.border {
+  border-color: #dee2e6 !important;
+}
 </style>

@@ -15,7 +15,7 @@
           <router-link to="/clientrequests" class="nav-link">Trabajos</router-link>
           <router-link to="/workerrequests" class="nav-link">Trabajadores</router-link>
           <router-link to="/search-workers" class="nav-link">Buscar maestro</router-link>
-          <router-link to="/support">Soporte</router-link>
+          <router-link to="/support" class="nav-link">Soporte</router-link>
           <template v-if="isLoggedIn && userType === 3">
             <router-link to="/modpage" class="nav-link">Moderación</router-link>
           </template>
