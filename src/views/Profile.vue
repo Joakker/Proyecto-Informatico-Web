@@ -155,6 +155,7 @@ onMounted(() => {
             <div class="card shadow-sm p-3 text-center h-100">
                 <h5 v-if="userType === 1">Tu cuenta está configurada como CLIENTE</h5>
                 <h5 v-else-if="userType === 2">Tu cuenta está configurada como MAESTRO</h5>
+                <h5 v-else-if="userType === 3">Tu cuenta está configurada como MODERADOR</h5>
                 <p>Si quieres cambiarla tendrás que registrarte de nuevo.</p>
             </div>
         </div>
