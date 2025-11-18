@@ -7,6 +7,7 @@
           <router-link to="/clientrequests">Trabajos</router-link>
           <router-link to="/workerrequests">Trabajadores</router-link>
           <router-link to="/search-workers">Buscar Maestro</router-link>
+          <router-link to="support">Soporte</router-link>
 
           <template v-if="isLoggedIn">
             <router-link to="/modpage">Moderación</router-link>
