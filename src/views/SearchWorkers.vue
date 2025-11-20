@@ -38,6 +38,7 @@
       <div v-for="worker in results" :key="worker.user_id" class="card mb-3 p-3 shadow">
         <h5>{{ worker.first_name }} {{ worker.last_name }}</h5>
         <p><strong>Dirección:</strong> {{ worker.address }}</p>
+        <p><strong>Correo:</strong> {{ worker.email }}</p>
         <p>
           <strong>Categorías:</strong>
           <span v-for="(cat, index) in worker.workers?.categories ?? []" :key="cat.category_id">

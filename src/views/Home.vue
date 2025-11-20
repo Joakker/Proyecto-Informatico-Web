@@ -78,7 +78,7 @@
         <template v-if="isLoggedIn">
           <div v-if="userType === 1" class="text-center p-3 border rounded">
             <h3>🔍¿Buscas un especialista?</h3>
-            <router-link to="/workerrequests" class="btn btn-primary mt-2">
+            <router-link to="/search-workers" class="btn btn-primary mt-2">
               Encuentra uno aquí
             </router-link>
           </div>
@@ -115,7 +115,7 @@
 
           <div class="text-center p-3 border rounded">
             <h3>🔍¿Buscas un especialista?</h3>
-            <router-link to="/workerrequests" class="btn btn-primary mt-2">
+            <router-link to="/search-workers" class="btn btn-primary mt-2">
               Encuentra uno aquí
             </router-link>
           </div>
