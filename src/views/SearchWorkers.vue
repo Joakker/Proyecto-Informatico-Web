@@ -68,6 +68,7 @@ interface WorkerInfo {
   first_name: string
   last_name: string
   address: string
+  email: string
   workers: { categories: WorkerCategory[] } | null
 }
 
