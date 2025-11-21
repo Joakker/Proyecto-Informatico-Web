@@ -88,6 +88,23 @@ async function deleteUser(userId: number) {
     }
 }
 
+async function deleteClientRequest(requestId: number) {
+    try {
+        const response = await fetch(`http://127.0.0.1:8000/api/clientrequests/${requestId}`, {
+            method: 'DELETE',
+            headers: {
+                'Accept': 'application/json',
+                'Authorization': `Bearer ${localStorage.getItem('token')}`
+            }
+        });
+        if (!response.ok) throw new Error(`Error ${response.status}`);
+
+        works.value = works.value.filter(w => w.client_request_id !== requestId);
+    } catch (error) {
+        console.error(error);
+    }
+}
+
 onMounted(async () => {
     if (isLoggedIn.value) {
         await Promise.all([getUserType(), getUserInfo(), getUsersList()])
@@ -113,7 +130,10 @@ onMounted(async () => {
     <h3 class="mb-4">Solicitudes de clientes</h3>
     <div class="row g-4">
         <div class="col-md-6 col-lg-4" v-for="work in works" :key="work.client_request_id">
-            <WorkRequestCard :work="work" />
+            <WorkRequestCard :work="work" 
+            :isModerator="userType === 3" 
+            @delete="deleteClientRequest"
+            />
         </div>
     </div>
 

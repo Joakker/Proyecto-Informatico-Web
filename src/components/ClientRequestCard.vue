@@ -5,6 +5,7 @@ import { defineProps } from 'vue'
 
 const props = defineProps<{
   work: { client_request_id: number, title: string, description: string, budget: number }
+  isModerator?: boolean
 }>()
 const router = useRouter()
 
@@ -19,7 +20,13 @@ function goToDetails() {
       <h5 class="card-title">{{ props.work.title }}</h5>
       <p class="card-text text-truncate">{{ props.work.description }}</p>
       <p class="card-text"><strong>Presupuesto:</strong> ${{ props.work.budget }}</p>
-      <button @click="goToDetails" class="btn btn-primary btn-sm">Ver más</button>
+      <button @click="goToDetails" class="btn btn-primary btn-sm me-2">Ver más</button>
+      <button 
+        v-if="isModerator" 
+        class="btn btn-danger btn-sm mt-auto" 
+        @click="$emit('delete', work.client_request_id)">
+        Eliminar
+      </button>
     </div>
   </div>
 </template>
