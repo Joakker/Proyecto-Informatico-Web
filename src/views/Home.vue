@@ -61,9 +61,9 @@
 </script>
 
 <template>
-  <div class="container py-5 d-flex justify-content-center">
+  <div class="container py-5 d-flex justify-content-center  outer-container">
     <!-- Card principal -->
-    <div class="card shadow-lg p-5" style="max-width: 1000px; width: 100%;">
+    <div class="card shadow-lg p-5 main-container" style="max-width: 1000px; width: 100%;">
 
       <!-- Bienvenida -->
       <div class="text-center mb-4">
@@ -130,6 +130,18 @@ body {
   background-color: #f0f2f5;
 }
 
+.main-container {
+  background-color: rgba(70, 27, 227, 0.295); /* el color que quieras */
+  border-radius: 15px;       /* opcional: bordes redondeados */
+  padding: 2rem;             /* opcional: espacio interno */
+}
+
+.outer-container {
+  max-width: 900px;   /* ancho máximo del contenedor */
+  min-width: 800px;    /* opcional: ancho mínimo */
+  width: 95%;          /* ancho relativo al viewport */
+  margin: 0 auto;      /* centrar horizontal */
+}
 /* Opcional: bordes y sombras más suaves para la card */
 .card {
   border-radius: 15px;
