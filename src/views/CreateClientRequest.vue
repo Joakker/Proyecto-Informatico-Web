@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 
 const title = ref('')
@@ -10,6 +10,9 @@ const city = ref('')
 const region = ref('')
 const country = ref('Chile')
 const postalCode = ref('')
+//nuevo para seleccionar y guardar categoría
+const categories = ref<{ category_id: number; name: string }[]>([]);
+const selectedCategory = ref<number | null>(null);
 
 const router = useRouter()
 
@@ -22,7 +25,26 @@ const mapsEmbedUrl = computed(() => {
   return `https://www.google.com/maps/embed/v1/place?key=${apiKey}&q=${encodeURIComponent(fullAddress.value)}`
 })
 
+//para categorías
+async function getCategories() {
+  const res = await fetch('http://127.0.0.1:8000/api/categories', {
+    headers: {
+      'Accept': 'application/json',
+      'Authorization': `Bearer ${localStorage.getItem('token')}`,
+    }
+  })
+  categories.value = await res.json()
+}
+
+onMounted(() => {
+  getCategories()
+})
+
 async function submitJob() {
+    if (!selectedCategory.value) {
+        alert('Por favor, seleccione una categoría.')
+        return
+    }
     const response = await fetch('http://127.0.0.1:8000/api/create-client-request', {
         method: 'POST',
         headers: {
@@ -37,6 +59,7 @@ async function submitJob() {
             street: street.value,
             city: city.value,
             region: region.value,
+            category_id: selectedCategory.value,
         }),
     })
     router.push('/clientrequests')
@@ -63,6 +86,16 @@ async function submitJob() {
         <div class="col-md-6">
           <label class="form-label">Presupuesto (CLP)</label>
           <input v-model.number="budget" type="number" min="0" class="form-control" required />
+        </div>
+
+        <div class="col-md-6">
+          <label class="form-label">Categoría</label>
+          <select v-model="selectedCategory" class="form-select" required>
+            <option value="" disabled>Seleccione una categoría</option>
+            <option v-for="cat in categories" :key="cat.category_id" :value="cat.category_id">
+              {{ cat.name }}
+            </option>
+          </select>
         </div>
 
         <!-- Dirección -->

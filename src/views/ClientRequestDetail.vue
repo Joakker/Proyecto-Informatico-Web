@@ -11,6 +11,12 @@ interface User {
   score: number
 }
 
+interface Category {
+  category_id: number
+  name: string
+  description?: string
+}
+
 interface Client {
   client_id: number
   user_id: number
@@ -25,6 +31,7 @@ interface ClientRequest {
   budget: number
   address: string
   client?: Client 
+  category?: Category
 }
 
 const route = useRoute()
@@ -54,6 +61,7 @@ onMounted(async () => {
 
         <ul class="list-group list-group-flush mb-3">
           <li class="list-group-item"><strong>Presupuesto:</strong> ${{ request.budget }}</li>
+          <li class="list-group-item"><strong>Categoría:</strong> {{ request.category?.name || 'Sin categoría' }}</li>
           <li class="list-group-item"><strong>Dirección:</strong> {{ request.address }}</li>
         </ul>
 
