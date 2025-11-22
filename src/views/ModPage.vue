@@ -2,6 +2,7 @@
 import { useUserStore } from '@/stores/user'
 import { computed, onMounted, ref } from 'vue'
 import WorkRequestCard from '../components/ClientRequestCard.vue'
+import SupportTicket from './SupportTicket.vue'
 
 interface WorkRequest {
   client_request_id: number
@@ -163,6 +164,9 @@ onMounted(async () => {
             <button class="btn btn-danger btn-sm">
                 Eliminar
             </button>
+            <SupportTicket
+                :conversation_id="ticket.conversation_id"
+            />
         </li>
     </ul>
 
