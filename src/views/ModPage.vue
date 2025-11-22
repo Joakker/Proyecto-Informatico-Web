@@ -18,6 +18,14 @@ interface User {
     type: number
 }
 
+interface Conversation {
+    conversation_id: number
+    mod_id: number
+    user_id: number
+    created_at: string
+    updated_at: string
+}
+
 const userStore = useUserStore()
 const isLoggedIn = computed(() => userStore.user !== null)
 
@@ -25,6 +33,7 @@ const works = ref<WorkRequest[]>([])
 const userType = ref<number|null>(null)
 const userInfo = ref()
 const userList = ref<User[]>([])
+const userTickets = ref<Conversation[]>([])
 
 async function getUserType() {
     try {
@@ -88,9 +97,25 @@ async function deleteUser(userId: number) {
     }
 }
 
+async function getTickets() {
+    try {
+        const response = await fetch('http://127.0.0.1:8000/api/mod_conversations', {
+            headers: {
+                'Accept': 'application/json',
+                'Authorization': `Bearer ${localStorage.getItem('token')}`
+            }
+        })
+        if (!response.ok) throw new Error(`Error ${response.status}`)
+        const result = await response.json()
+        userTickets.value = result.data
+    } catch (error) {
+        console.error(error)
+    }
+}
+
 onMounted(async () => {
     if (isLoggedIn.value) {
-        await Promise.all([getUserType(), getUserInfo(), getUsersList()])
+        await Promise.all([getTickets(), getUserType(), getUserInfo(), getUsersList()])
         const response = await fetch('http://127.0.0.1:8000/api/clientrequests')
         works.value = await response.json()
     }
@@ -125,6 +150,17 @@ onMounted(async () => {
         <li class="list-group-item d-flex justify-content-between align-items-center" v-for="user in userList" :key="user.user_id">
             <span>{{ user.first_name }} {{ user.last_name }} - {{ user.email }}</span>
             <button class="btn btn-danger btn-sm" @click="deleteUser(user.user_id)">
+                Eliminar
+            </button>
+        </li>
+    </ul>
+
+    <h3 class="mb-4">Tickets</h3>
+    <ul class="list-group">
+        <li class="list-group-item d-flex justify-content-between align-items-center" v-for="ticket in userTickets" :key="ticket.conversation_id">
+            <span>Usuario {{ ticket.user_id }}</span>
+            <span>Ticket creado el {{ ticket.created_at }}</span>
+            <button class="btn btn-danger btn-sm">
                 Eliminar
             </button>
         </li>

@@ -75,9 +75,9 @@ onMounted(async () => {
 </script>
 
 <template>
-    <h1>Chat soporte</h1>
+    <h1>Soporte</h1>
 
-    <div v-if="conversation">
+    <div v-if="conversation" class="conversation">
         <div v-for="msg in messages" :key="msg.message_id" class="message">
         <p><strong>{{ msg.sender?.first_name || 'Usuario' }}:</strong> {{ msg.content }}</p>
         </div>
@@ -94,3 +94,15 @@ onMounted(async () => {
 
     </div>
 </template>
+
+<style>
+
+.conversation {
+  display: flex;
+  flex-direction: column;
+  border-width: 2px;
+  border-color: gray;
+  border-style: solid;
+}
+
+</style>
