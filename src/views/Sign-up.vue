@@ -64,14 +64,14 @@ async function CreateAccount() {
     if (!response.ok) {
       const errorData = await response.json()
       console.error("Validation errors:", errorData.error)
-      throw new Error(`Response status: ${response.status}`)
+      throw new Error(errorData.error)
     }
 
     await response.json()
     router.push('/')
   } catch (error) {
     console.error(error)
-    alert('Error al crear la cuenta. Revisa la consola.')
+    alert(error)
   }
 }
 </script>

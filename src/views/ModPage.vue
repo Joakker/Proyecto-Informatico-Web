@@ -35,6 +35,15 @@ const userType = ref<number|null>(null)
 const userInfo = ref()
 const userList = ref<User[]>([])
 const userTickets = ref<Conversation[]>([])
+const expandedTickets = ref<number[]>([])
+
+function toggleTicket(conversationId: number) {
+  if (expandedTickets.value.includes(conversationId)) {
+    expandedTickets.value = expandedTickets.value.filter(id => id !== conversationId)
+  } else {
+    expandedTickets.value.push(conversationId)
+  }
+}
 
 async function getUserType() {
     try {
@@ -114,11 +123,24 @@ async function getTickets() {
     }
 }
 
+async function getWorks() {
+    try {
+        const response = await fetch('http://127.0.0.1:8000/api/clientrequests', {
+            headers: {
+                'Accept': 'application/json',
+                'Authorization': `Bearer ${localStorage.getItem('token')}`
+            }
+        })
+        if (!response.ok) throw new Error(`Error ${response.status}`)
+        works.value = await response.json()
+    } catch (error) {
+        console.error(error)
+    }
+}
+
 onMounted(async () => {
     if (isLoggedIn.value) {
-        await Promise.all([getTickets(), getUserType(), getUserInfo(), getUsersList()])
-        const response = await fetch('http://127.0.0.1:8000/api/clientrequests')
-        works.value = await response.json()
+        await Promise.all([getWorks(), getTickets(), getUserType(), getUserInfo(), getUsersList()])
     }
 })
 </script>
@@ -139,7 +161,7 @@ onMounted(async () => {
     <h3 class="mb-4">Solicitudes de clientes</h3>
     <div class="row g-4">
         <div class="col-md-6 col-lg-4" v-for="work in works" :key="work.client_request_id">
-            <WorkRequestCard :work="work" />
+            <WorkRequestCard @child-action="getWorks()" :work="work" />
         </div>
     </div>
 
@@ -158,15 +180,29 @@ onMounted(async () => {
 
     <h3 class="mb-4">Tickets</h3>
     <ul class="list-group">
-        <li class="list-group-item d-flex justify-content-between align-items-center" v-for="ticket in userTickets" :key="ticket.conversation_id">
-            <span>Usuario {{ ticket.user_id }}</span>
-            <span>Ticket creado el {{ ticket.created_at }}</span>
-            <button class="btn btn-danger btn-sm">
-                Eliminar
-            </button>
-            <SupportTicket
-                :conversation_id="ticket.conversation_id"
-            />
+        <li v-for="ticket in userTickets" :key="ticket.conversation_id">
+            <div class="list-group-item d-flex justify-content-between align-items-center">
+
+                <button 
+                    class="btn btn-link btn-sm" 
+                    @click="toggleTicket(ticket.conversation_id)"
+                >
+                    <i 
+                        :class="expandedTickets.includes(ticket.conversation_id) 
+                        ? 'bi bi-chevron-up' 
+                        : 'bi bi-chevron-down'"
+                    ></i>
+                </button>
+
+                <span>Usuario {{ ticket.user_id }}</span>
+                <span>Ticket creado el {{ ticket.created_at }}</span>
+            </div>
+
+            <transition name="slide">
+                <div v-if="expandedTickets.includes(ticket.conversation_id)">
+                    <SupportTicket :conversation_id="ticket.conversation_id" />
+                </div>
+            </transition>
         </li>
     </ul>
 
@@ -182,4 +218,22 @@ h3 {
 hr {
     border-top: 2px solid #dee2e6;
 }
+
+.slide-enter-active,
+.slide-leave-active {
+  transition: all 0.3s ease;
+}
+.slide-enter-from,
+.slide-leave-to {
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+}
+.slide-enter-to,
+.slide-leave-from {
+  max-height: 500px; /* ajusta según contenido */
+  opacity: 1;
+}
+
+
 </style>

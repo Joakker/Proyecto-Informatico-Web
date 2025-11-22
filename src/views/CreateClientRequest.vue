@@ -42,8 +42,7 @@ onMounted(() => {
 
 async function submitJob() {
     if (!selectedCategory.value) {
-        alert('Por favor, seleccione una categoría.')
-        return
+        selectedCategory.value = null;
     }
     const response = await fetch('http://127.0.0.1:8000/api/create-client-request', {
         method: 'POST',
@@ -90,7 +89,7 @@ async function submitJob() {
 
         <div class="col-md-6">
           <label class="form-label">Categoría</label>
-          <select v-model="selectedCategory" class="form-select" required>
+          <select v-model="selectedCategory" class="form-select">
             <option value="" disabled>Seleccione una categoría</option>
             <option v-for="cat in categories" :key="cat.category_id" :value="cat.category_id">
               {{ cat.name }}

@@ -36,7 +36,10 @@ async function EnterAccount() {
     localStorage.setItem('user', JSON.stringify(result.user))
     localStorage.setItem('token', result.token)
 
-    router.push('/')
+    router.push('/').then(() => {
+      window.location.reload();
+    });
+    
   } catch (error) {
     console.error(error);
   } finally {

@@ -3,6 +3,7 @@ import { ref, onMounted } from 'vue'
 
 const messages = ref<any[]>([])
 const newMessage = ref('')
+const userInfo = ref();
 
 const props = defineProps<{
   conversation_id: number
@@ -38,26 +39,40 @@ async function sendMessage() {
   const data = await response.json()
   messages.value.push(data.data)
   newMessage.value = '' // limpiar input
+  getMessages();
+}
+
+async function getUserInfo() {
+    try {
+        const response = await fetch('http://127.0.0.1:8000/api/user', {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Authorization': `Bearer ${localStorage.getItem('token')}`
+            }
+        })
+        if (!response.ok) throw new Error(`Error ${response.status}`)
+        const data = await response.json()
+        userInfo.value = data
+    } catch (error) { console.error(error) }
 }
 
 onMounted(async () => {
   try {
-    await getMessages()
+    await getUserInfo();
+    await getMessages();
   } catch (error) {
     console.error('Error fetching works:', error)
   }
 })
 
 
-
 </script>
 
 <template>
-    <h1>Soporte</h1>
-
     <div class="conversation">
         <div v-for="msg in messages" :key="msg.message_id" class="message">
-        <p><strong>{{ msg.sender?.first_name || 'Usuario' }}:</strong> {{ msg.content }}</p>
+        <p><strong>{{ msg.sender?.first_name || 'Usuario' }} {{ userInfo.user_id === msg.sender_id ? '(You)' : '(User)' }}: </strong> {{ msg.content }}</p>
         </div>
 
         <div class="chat-input">
