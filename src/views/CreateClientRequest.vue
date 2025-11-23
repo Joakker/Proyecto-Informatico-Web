@@ -10,6 +10,7 @@ const city = ref('')
 const region = ref('')
 const country = ref('Chile')
 const postalCode = ref('')
+
 //nuevo para seleccionar y guardar categoría
 const categories = ref<{ category_id: number; name: string }[]>([]);
 const selectedCategory = ref<number | null>(null);
@@ -21,7 +22,8 @@ const fullAddress = computed(() => {
 })
 
 const mapsEmbedUrl = computed(() => {
-  const apiKey = ' ' // tu API key de Google Maps
+  const apiKey = import.meta.env.VITE_SECRET_KEY;
+  console.log(apiKey);
   return `https://www.google.com/maps/embed/v1/place?key=${apiKey}&q=${encodeURIComponent(fullAddress.value)}`
 })
 
