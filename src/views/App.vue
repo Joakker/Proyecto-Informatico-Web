@@ -1,57 +1,63 @@
 <template>
   <div class="app-root d-flex flex-column min-vh-100">
 
-    <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-light custom-navbar px-4">
+    <!-- NAVBAR -->
+    <nav class="navbar navbar-expand-lg enhanced-navbar px-4">
       <div class="container-fluid d-flex align-items-center justify-content-between">
 
-        <!-- Logo + Links -->
-        <div class="d-flex align-items-center gap-3">
-          <router-link to="/">
-            <img src="/logo.png" alt="Logo Maestro Chasquilla" width="50" height="50" class="me-2 rounded-circle">
-          </router-link>
+        <!-- LOGO SOLO -->
+        <div class="d-flex align-items-center brand-area">
+          <img src="/logo2.png" alt="Logo Maestro Chasquilla" class="brand-logo" />
+        </div>
 
-          <router-link to="/" class="nav-link">Home</router-link>
-          <router-link to="/clientrequests" class="nav-link">Trabajos</router-link>
-          <router-link to="/workerrequests" class="nav-link">Trabajadores</router-link>
-          <router-link to="/search-workers" class="nav-link">Buscar maestro</router-link>
+        <!-- LINKS -->
+        <div class="d-flex align-items-center gap-3 nav-links">
+          <router-link to="/" class="nav-link-custom">Inicio</router-link>
+          <router-link to="/clientrequests" class="nav-link-custom">Trabajos</router-link>
+          <router-link to="/workerrequests" class="nav-link-custom">Trabajadores</router-link>
+          <router-link to="/search-workers" class="nav-link-custom">Buscar maestro</router-link>
+
           <template v-if="isLoggedIn && userType !== 3">
-            <router-link to="/support" class="nav-link">Soporte</router-link>
+            <router-link to="/support" class="nav-link-custom">Soporte</router-link>
           </template>
+
           <template v-if="isLoggedIn && userType === 3">
-            <router-link to="/modpage" class="nav-link">Moderación</router-link>
+            <router-link to="/modpage" class="nav-link-custom">Moderación</router-link>
           </template>
         </div>
 
-        <!-- Botones login/perfil -->
+        <!-- BOTONES -->
         <div class="d-flex align-items-center gap-2">
-          <template v-if="isLoggedIn">
-            <router-link to="/profile" class="btn custom-btn btn-sm">Perfil</router-link>
-            <button @click="logout" class="btn custom-btn btn-sm">Cerrar sesión</button>
-          </template>
-          <template v-else>
-            <router-link to="/login" class="btn custom-btn btn-sm">Iniciar sesión</router-link>
-            <router-link to="/signup" class="btn custom-btn btn-sm">Registrarse</router-link>
-          </template>
-        </div>
 
+          <!-- LOGGED -->
+          <template v-if="isLoggedIn">
+            <router-link to="/profile" class="btn btn-outline-light modern-btn">Perfil</router-link>
+            <button @click="logout" class="btn btn-light modern-btn">Cerrar sesión</button>
+          </template>
+
+          <!-- NOT LOGGED -->
+          <template v-else>
+            <router-link to="/login" class="btn btn-outline-light modern-btn">Iniciar sesión</router-link>
+            <router-link to="/signup" class="btn btn-primary hero-btn-main">Registrarse</router-link>
+          </template>
+
+        </div>
       </div>
     </nav>
 
-    <!-- Main content -->
+    <!-- MAIN -->
     <main class="flex-grow-1">
       <router-view />
     </main>
 
-    <!-- Footer -->
-    <footer class="custom-footer text-center py-3 mt-auto">
-      <div class="d-flex flex-column align-items-center">
-        <small>Maestro Chasquilla 2025 © Todos los derechos reservados</small>
-      </div>
+    <!-- FOOTER -->
+    <footer class="enhanced-footer text-center py-4 mt-auto">
+      <small>Maestro Chasquilla 2025 © Todos los derechos reservados</small>
     </footer>
 
   </div>
 </template>
+
 
 <script setup lang="ts">
 import { useUserStore } from '@/stores/user'
@@ -61,7 +67,7 @@ import { useRouter } from 'vue-router'
 const userStore = useUserStore()
 const isLoggedIn = computed(() => userStore.user !== null)
 const router = useRouter()
-const userType = ref<number|null>(null)
+const userType = ref<number | null>(null)
 
 function logout() {
   userStore.logout()
@@ -74,8 +80,8 @@ async function getUserType() {
   try {
     const response = await fetch('http://127.0.0.1:8000/api/user/type', {
       headers: {
-        'Accept': 'application/json',
-        'Authorization': `Bearer ${localStorage.getItem('token')}`
+        Accept: 'application/json',
+        Authorization: `Bearer ${localStorage.getItem('token')}`
       }
     })
     if (!response.ok) throw new Error(`Error ${response.status}`)
@@ -87,58 +93,80 @@ async function getUserType() {
 }
 
 onMounted(() => {
-  if (isLoggedIn.value) {
-    getUserType()
-  }
+  if (isLoggedIn.value) getUserType()
 })
 </script>
 
 <style scoped>
-/* Navbar links */
-.nav-link {
-  color: rgba(0, 0, 0, 0.763);
+/* ---------------- NAVBAR ---------------- */
+
+.enhanced-navbar {
+  background:
+    linear-gradient(0deg, rgba(0, 0, 0, 0.65), rgba(0, 0, 0, 0.65)),
+    url('/wood.jpg');
+  background-size: stretch;
+  background-position: center;
+  border-bottom: 1px solid rgba(255,255,255,0.2);
+  padding-top: 0.6rem;
+  padding-bottom: 0.6rem;
+  top: 0;
+  z-index: 1050;
+}
+
+
+.enhanced-navbar::before {
+  display: none !important;
+}
+
+/* LOGO */
+.brand-logo {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+/* LINKS */
+.nav-link-custom {
+  color: #dbeafe;
   text-decoration: none;
   font-weight: 500;
-}
-.nav-link:hover {
-  text-decoration: underline;
-}
-
-/* Custom navbar color */
-.custom-navbar {
-  background-color: rgba(252, 252, 39, 0.689); /* amarillo cálido */
+  padding: 0.35rem 0.6rem;
+  transition: 0.2s ease;
 }
 
-/* Custom footer color */
-.custom-footer {
-  background-color: rgba(252, 252, 39, 0.689);
+.nav-link-custom:hover {
+  color: #4cb0e8;
 }
 
-/* Main content padding */
+/* BOTONES */
+.modern-btn {
+  padding: 0.45rem 1rem;
+  font-weight: 600;
+  border-radius: 8px;
+  font-size: 0.9rem;
+}
+
+.primary-btn {
+  background: #4cb0e8 !important;
+  color: #0a1f33 !important;
+  border: none;
+}
+
+.primary-btn:hover {
+  background: #6cc9ff !important;
+}
+
+/* FOOTER */
+.enhanced-footer {
+  background: #f5f7fa;
+  border-top: 1px solid #e5e7eb;
+  color: #475569;
+  font-size: 0.9rem;
+}
+
+/* MAIN */
 main {
-  padding: 1rem;
-}
-
-/* Footer logo redondo */
-footer img {
-  border-radius: 50%;
-}
-
-.custom-btn {
-  background-color: #234d60; 
-  color: white;              
-  border: none;              
-}
-
-.custom-btn:hover {
-  background-color: #2a74c2; 
-}
-</style>
-
-<style>
-html, body {
-  margin: 0;
   padding: 0;
-  background-color: white;
 }
 </style>
