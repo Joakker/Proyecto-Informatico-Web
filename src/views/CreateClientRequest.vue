@@ -10,6 +10,7 @@ const city = ref('')
 const region = ref('')
 const country = ref('Chile')
 const postalCode = ref('')
+
 //nuevo para seleccionar y guardar categoría
 const categories = ref<{ category_id: number; name: string }[]>([]);
 const selectedCategory = ref<number | null>(null);
@@ -21,7 +22,8 @@ const fullAddress = computed(() => {
 })
 
 const mapsEmbedUrl = computed(() => {
-  const apiKey = ' ' // tu API key de Google Maps
+  const apiKey = import.meta.env.VITE_SECRET_KEY;
+  console.log(apiKey);
   return `https://www.google.com/maps/embed/v1/place?key=${apiKey}&q=${encodeURIComponent(fullAddress.value)}`
 })
 
@@ -42,8 +44,7 @@ onMounted(() => {
 
 async function submitJob() {
     if (!selectedCategory.value) {
-        alert('Por favor, seleccione una categoría.')
-        return
+        selectedCategory.value = null;
     }
     const response = await fetch('http://127.0.0.1:8000/api/create-client-request', {
         method: 'POST',
@@ -90,7 +91,7 @@ async function submitJob() {
 
         <div class="col-md-6">
           <label class="form-label">Categoría</label>
-          <select v-model="selectedCategory" class="form-select" required>
+          <select v-model="selectedCategory" class="form-select">
             <option value="" disabled>Seleccione una categoría</option>
             <option v-for="cat in categories" :key="cat.category_id" :value="cat.category_id">
               {{ cat.name }}
