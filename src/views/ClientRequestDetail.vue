@@ -1,6 +1,28 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
+import { useUserStore } from '@/stores/user'
+
+const userType = ref<number|null>(null)
+const userStore = useUserStore()
+const isLoggedIn = computed(() => userStore.user !== null)
+
+
+async function getUserType() {
+    try {
+        const response = await fetch('http://127.0.0.1:8000/api/user/type', {
+            headers: {
+                'Accept': 'application/json',
+                'Authorization': `Bearer ${localStorage.getItem('token')}`
+            }
+        })
+        if (!response.ok) throw new Error(`Error ${response.status}`)
+        const data = await response.json()
+        userType.value = data.type
+    } catch (error) {
+        console.error(error)
+    }
+}
 
 interface User {
   id: number
@@ -40,10 +62,33 @@ const requestId = route.params.id as string
 const request = ref<ClientRequest | null>(null)
 
 onMounted(async () => {
+  if (isLoggedIn.value) getUserType()
   const response = await fetch(`http://127.0.0.1:8000/api/clientrequests/${requestId}`);
   request.value = await response.json();
   console.log(request);
 })
+
+async function TakeJob(){
+  try{
+    const response = await fetch(`http://127.0.0.1:8000/api/create_work`, {
+        method: "POST",
+        headers: { 'Content-Type': 'application/json', 
+        'Accept': 'application/json' ,
+        'Authorization': `Bearer ${localStorage.getItem('token')}`,      
+        },
+        body: JSON.stringify({
+          client_id: request.value?.client_id,
+          worker_id: userStore.$id,
+          client_request_id: request.value?.client_request_id,
+          state: 'postulado',
+        }),
+      })
+  } catch (error) {
+    console.error(error)
+    alert(error)
+  }
+  
+}
 </script>
 
 <template>
@@ -70,6 +115,12 @@ onMounted(async () => {
           <li class="list-group-item"><strong>Teléfono:</strong> {{ request.client?.user?.phone_number }}</li>
           <li class="list-group-item"><strong>Correo:</strong> {{ request.client?.user?.email }}</li>
         </ul>
+
+        <template v-if="userType === 2">
+          <div class="mt-4 d-flex justify-content-center">
+            <router-link to="/clientrequests" class="btn btn-primary" @click.once="TakeJob">Tomar trabajo</router-link>
+          </div>
+        </template>
 
         <div class="mt-4 d-flex justify-content-center">
           <router-link to="/clientrequests" class="btn btn-secondary">Volver a la lista</router-link>
