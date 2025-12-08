@@ -1,33 +1,12 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue'
+import { onMounted, ref, computed } from 'vue'
 import { useRoute } from 'vue-router'
 import { useUserStore } from '@/stores/user'
 
-const userType = ref<number|null>(null)
-const userStore = useUserStore()
-const isLoggedIn = computed(() => userStore.user !== null)
-
-
-async function getUserType() {
-    try {
-        const response = await fetch('http://127.0.0.1:8000/api/user/type', {
-            headers: {
-                'Accept': 'application/json',
-                'Authorization': `Bearer ${localStorage.getItem('token')}`
-            }
-        })
-        if (!response.ok) throw new Error(`Error ${response.status}`)
-        const data = await response.json()
-        userType.value = data.type
-    } catch (error) {
-        console.error(error)
-    }
-}
-
 interface User {
   id: number
-  first_name: string   
-  last_name?: string  
+  first_name: string
+  last_name?: string
   email: string
   phone_number: string
   score: number
@@ -42,7 +21,7 @@ interface Category {
 interface Client {
   client_id: number
   user_id: number
-  user?: User     
+  user?: User
 }
 
 interface ClientRequest {
@@ -52,7 +31,7 @@ interface ClientRequest {
   description: string
   budget: number
   address: string
-  client?: Client 
+  client?: Client
   category?: Category
 }
 
@@ -61,82 +40,113 @@ const requestId = route.params.id as string
 
 const request = ref<ClientRequest | null>(null)
 
+const accepting = ref(false)
+const successMessage = ref('')
+const errorMessage = ref('')
+
+const userStore = useUserStore()
+const isLoggedIn = computed(() => userStore.user !== null)
+const userType = ref<number | null>(null)
+
+async function getUserType() {
+  try {
+    const response = await fetch('http://127.0.0.1:8000/api/user/type', {
+      headers: {
+        Accept: 'application/json',
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
+      },
+    })
+    const data = await response.json()
+    userType.value = data.type
+  } catch {
+    userType.value = null
+  }
+}
+
 onMounted(async () => {
-  if (isLoggedIn.value) getUserType()
-  const response = await fetch(`http://127.0.0.1:8000/api/clientrequests/${requestId}`);
-  request.value = await response.json();
-  console.log(request);
+  await getUserType()
+
+  const response = await fetch(
+    `http://127.0.0.1:8000/api/clientrequests/${requestId}`,
+  )
+  request.value = await response.json()
 })
 
-async function TakeJob(){
-  try{
-    const response = await fetch(`http://127.0.0.1:8000/api/create_work`, {
-        method: "POST",
-        headers: { 'Content-Type': 'application/json', 
-        'Accept': 'application/json' ,
-        'Authorization': `Bearer ${localStorage.getItem('token')}`,      
-        },
-        body: JSON.stringify({
-          client_id: request.value?.client_id,
-          worker_id: userStore.$id,
-          client_request_id: request.value?.client_request_id,
-          state: 'postulado',
-        }),
-      })
-  } catch (error) {
-    console.error(error)
-    alert(error)
+async function acceptJob() {
+  if (!request.value) return
+
+  accepting.value = true
+  successMessage.value = ''
+  errorMessage.value = ''
+
+  try {
+    const response = await fetch('http://127.0.0.1:8000/api/create_work', {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
+      },
+      body: JSON.stringify({
+        client_id: request.value.client?.client_id,
+        client_request_id: request.value.client_request_id,
+        state: 'pendiente',
+      }),
+    })
+
+    const data = await response.json()
+
+    if (!response.ok) {
+      errorMessage.value = data.error || 'No se pudo aceptar el trabajo.'
+      return
+    }
+
+    successMessage.value = 'Trabajo tomado exitosamente.'
+  } catch (err) {
+    errorMessage.value = 'Error inesperado al tomar el trabajo.'
+  } finally {
+    accepting.value = false
   }
-  
 }
 </script>
 
 <template>
   <div class="details-wrapper" v-if="request">
+    <!-- Mensajes -->
+    <div v-if="successMessage" class="alert-success">
+      {{ successMessage }}
+    </div>
+    <div v-if="errorMessage" class="alert-error">
+      {{ errorMessage }}
+    </div>
 
+    <!-- HEADER -->
     <div class="header">
       <div class="icon-circle">
-        📝
+        📄
       </div>
 
       <div>
         <h1 class="title">{{ request.title }}</h1>
         <p class="subtitle">
-          Solicitud creada por 
-          <strong>{{ request.client?.user?.first_name }} {{ request.client?.user?.last_name }}</strong>
+          Solicitud creada por
+          <strong>
+            {{ request.client?.user?.first_name }}
+            {{ request.client?.user?.last_name }}
+          </strong>
         </p>
-
-        <p class="card-text">{{ request.description }}</p>
-
-        <ul class="list-group list-group-flush mb-3">
-          <li class="list-group-item"><strong>Presupuesto:</strong> ${{ request.budget }}</li>
-          <li class="list-group-item"><strong>Categoría:</strong> {{ request.category?.name || 'Sin categoría' }}</li>
-          <li class="list-group-item"><strong>Dirección:</strong> {{ request.address }}</li>
-        </ul>
-
-        <h5>Información de contacto</h5>
-        <ul class="list-group list-group-flush">
-          <li class="list-group-item"><strong>Teléfono:</strong> {{ request.client?.user?.phone_number }}</li>
-          <li class="list-group-item"><strong>Correo:</strong> {{ request.client?.user?.email }}</li>
-        </ul>
-
-        <template v-if="userType === 2">
-          <div class="mt-4 d-flex justify-content-center">
-            <router-link to="/clientrequests" class="btn btn-primary" @click.once="TakeJob">Tomar trabajo</router-link>
-          </div>
-        </template>
-
-        <div class="mt-4 d-flex justify-content-center">
-          <router-link to="/clientrequests" class="btn btn-secondary">Volver a la lista</router-link>
-        </div>
       </div>
     </div>
 
+    <!-- DESCRIPCIÓN -->
     <div class="card-section">
       <h3>Descripción del trabajo</h3>
-      <p class="description-text">{{ request.description }}</p>
+      <p class="description-text">
+        {{ request.description }}
+      </p>
     </div>
 
+    <!-- INFORMACIÓN GENERAL -->
     <div class="info-section">
       <div class="info-item">
         <label>Presupuesto estimado</label>
@@ -155,10 +165,13 @@ async function TakeJob(){
 
       <div class="info-item">
         <label>Calificación del cliente</label>
-        <span class="score-badge">{{ request.client?.user?.score }}/5 ⭐</span>
+        <span class="score-badge">
+          {{ request.client?.user?.score }}/5 ⭐
+        </span>
       </div>
     </div>
 
+    <!-- CONTACTO -->
     <div class="contact-section">
       <h3>Información de contacto</h3>
 
@@ -173,23 +186,49 @@ async function TakeJob(){
       </div>
     </div>
 
-    <div class="actions">
+    <!-- BOTONES (SOLO AQUÍ) -->
+    <div class="actions row-buttons">
+      <button
+        v-if="isLoggedIn && userType === 2"
+        class="accept-btn"
+        @click="acceptJob"
+        :disabled="accepting"
+      >
+        Tomar trabajo
+      </button>
+
       <router-link to="/clientrequests" class="back-btn">
         Volver a las solicitudes
       </router-link>
     </div>
-
   </div>
 </template>
 
 <style scoped>
+.alert-success {
+  background: #d4f8d4;
+  color: #225e22;
+  padding: 10px 14px;
+  border-radius: 10px;
+  margin-bottom: 15px;
+}
+
+.alert-error {
+  background: #ffe0e0;
+  color: #8a1f1f;
+  padding: 10px 14px;
+  border-radius: 10px;
+  margin-bottom: 15px;
+}
+
+/* Diseño base tuyo */
 .details-wrapper {
   max-width: 800px;
   margin: auto;
   padding: 2rem;
   background: linear-gradient(180deg, #ffffff 0%, #f7f9ff 60%, #eef4ff 100%);
   border-radius: 18px;
-  box-shadow: 0 3px 20px rgba(0,0,0,0.07);
+  box-shadow: 0 3px 20px rgba(0, 0, 0, 0.07);
 }
 
 .header {
@@ -207,8 +246,9 @@ async function TakeJob(){
   display: flex;
   justify-content: center;
   align-items: center;
+
   color: white;
-  font-size: 1.5rem;
+  font-size: 1.7rem;
   box-shadow: 0 4px 12px rgba(76, 147, 255, 0.4);
 }
 
@@ -224,6 +264,7 @@ async function TakeJob(){
   font-size: 0.95rem;
 }
 
+/* Secciones */
 .card-section,
 .info-section,
 .contact-section {
@@ -231,7 +272,7 @@ async function TakeJob(){
   padding: 1.3rem 1.5rem;
   margin-top: 1.3rem;
   border-radius: 14px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
 }
 
 .card-section h3,
@@ -246,6 +287,7 @@ async function TakeJob(){
   line-height: 1.5;
 }
 
+/* Info grid */
 .info-section {
   display: grid;
   gap: 1rem;
@@ -272,6 +314,7 @@ async function TakeJob(){
   color: #2e2e2e;
 }
 
+/* Contacto */
 .contact-row {
   display: flex;
   align-items: center;
@@ -286,22 +329,38 @@ async function TakeJob(){
   color: #4c93ff;
 }
 
+/* Botones */
 .actions {
-  text-align: center;
   margin-top: 2rem;
+}
+
+.row-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+}
+
+.accept-btn {
+  background: #009fe3;
+  padding: 0.65rem 1.4rem;
+  border-radius: 10px;
+  color: white;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.accept-btn:hover {
+  background: #007bb1;
 }
 
 .back-btn {
   background: #d1d9e6;
-  padding: 0.7rem 1.5rem;
-  border-radius: 12px;
+  padding: 0.65rem 1.4rem;
+  border-radius: 10px;
   font-weight: 600;
   color: #1f2937;
   text-decoration: none;
-  transition: 0.25s;
-}
-
-.back-btn:hover {
-  background: #c4ccd8;
 }
 </style>

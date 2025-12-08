@@ -69,7 +69,7 @@ async function deletePostConfirmed() {
     console.error(error);
   } finally {
     isDeleting.value = false;
-    showModal.value = false; // 👈 SIEMPRE se cierra el modal
+    showModal.value = false; // SIEMPRE se cierra el modal
   }
 }
 
@@ -83,7 +83,6 @@ onMounted(() => {
     <!-- HEADER -->
     <div class="header">
       <div class="icon-circle">🔧</div>
-      <div class="status">Pendiente</div>
     </div>
 
     <!-- TITLE -->
@@ -176,13 +175,6 @@ onMounted(() => {
   color: white;
 }
 
-.status {
-  background: #ffd67c;
-  padding: 6px 14px;
-  border-radius: 10px;
-  font-weight: 600;
-  color: #6d4e00;
-}
 
 /* CONTENT */
 .title {

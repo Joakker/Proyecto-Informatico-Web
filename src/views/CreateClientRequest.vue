@@ -164,10 +164,16 @@ async function submitJob() {
           ></iframe>
         </div>
 
-        <!-- Botón -->
+        <!-- Botón Publicar -->
         <button class="submit-btn" type="submit">
           Publicar trabajo
         </button>
+
+        <!-- Botón Volver -->
+        <button type="button" class="back-btn" @click="router.push('/clientrequests')">
+          ← Volver a solicitudes
+        </button>
+
       </form>
 
     </div>
@@ -176,18 +182,13 @@ async function submitJob() {
 
 <style scoped>
 
-/* ----------------- */
-/* LAYOUT GENERAL    */
-/* ----------------- */
 .page {
   padding: 40px 0 80px 0;
   background: #eef3f8;
   min-height: 100vh;
 }
 
-/* ----------------- */
-/* HERO              */
-/* ----------------- */
+/* HERO */
 .hero {
   max-width: 900px;
   margin: 0 auto 30px auto;
@@ -230,9 +231,7 @@ async function submitJob() {
   color: #555;
 }
 
-/* ----------------- */
-/* FORM CARD         */
-/* ----------------- */
+/* FORM CARD */
 .form-card {
   max-width: 900px;
   margin: auto;
@@ -245,7 +244,6 @@ async function submitJob() {
   backdrop-filter: blur(6px);
 }
 
-/* Inputs modernos */
 .input-group {
   display: flex;
   flex-direction: column;
@@ -277,7 +275,6 @@ async function submitJob() {
   outline: none;
 }
 
-/* 2 columnas */
 .two-col {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -304,7 +301,7 @@ async function submitJob() {
   box-shadow: 0 6px 20px rgba(0,0,0,0.12);
 }
 
-/* BOTÓN SUBMIT */
+/* BOTÓN PUBLICAR */
 .submit-btn {
   width: 100%;
   margin-top: 25px;
@@ -328,4 +325,21 @@ async function submitJob() {
   transform: translateY(-2px);
 }
 
+/* BOTÓN VOLVER */
+.back-btn {
+  width: 100%;
+  margin-top: 15px;
+  padding: 12px 0;
+  border-radius: 10px;
+  background: #d1d9e6;
+  border: none;
+  font-weight: 600;
+  color: #1f2937;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.back-btn:hover {
+  background: #c4ccd8;
+}
 </style>

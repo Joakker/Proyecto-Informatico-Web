@@ -20,7 +20,6 @@ const editData = ref({
 interface Category {
   category_id: number;
   name: string;
-  description?: string;
 }
 
 const categories = ref<Category[]>([])
@@ -28,94 +27,86 @@ const selectedCategories = ref<number[]>([])
 
 function loadWorkerCategories() {
     const worker = userInfo.value?.workers;
-    if (worker && worker.categories) {
+    if (worker?.categories) {
         selectedCategories.value = worker.categories.map((c: Category) => c.category_id);
     }
 }
 
 async function getUserType() {
     try {
-        const response = await fetch('http://127.0.0.1:8000/api/user/type', {
-            method: 'GET',
-            headers: {
-                'Accept': 'application/json',
-                'Authorization': `Bearer ${localStorage.getItem('token')}`
+        const res = await fetch('http://127.0.0.1:8000/api/user/type', {
+            headers: { 
+                Accept: 'application/json',
+                Authorization: `Bearer ${localStorage.getItem('token')}`
             }
         })
-        if (!response.ok) throw new Error(`Error ${response.status}`)
-        const data = await response.json()
-        userType.value = data.type
-    } catch (error) { console.error(error) }
+        userType.value = (await res.json()).type
+    } catch (e) { console.error(e) }
 }
 
 async function getUserInfo() {
     try {
-        const response = await fetch('http://127.0.0.1:8000/api/user', {
-            method: 'GET',
-            headers: {
-                'Accept': 'application/json',
-                'Authorization': `Bearer ${localStorage.getItem('token')}`
+        const res = await fetch('http://127.0.0.1:8000/api/user', {
+            headers: { 
+                Accept: 'application/json',
+                Authorization: `Bearer ${localStorage.getItem('token')}`
             }
         })
-        if (!response.ok) throw new Error(`Error ${response.status}`)
-        const data = await response.json()
+        const data = await res.json()
         userInfo.value = data
-        loadWorkerCategories()
         editData.value = {
             fname: data.first_name,
             lname: data.last_name,
             phone: data.phone_number,
             address: data.address
         }
-    } catch (error) { console.error(error) }
+        loadWorkerCategories()
+    } catch (e) { console.error(e) }
 }
 
 async function updateProfile() {
     try {
-        const response = await fetch('http://127.0.0.1:8000/api/profile/update', {
+        const res = await fetch('http://127.0.0.1:8000/api/profile/update', {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
-                'Accept': 'application/json',
-                'Authorization': `Bearer ${localStorage.getItem('token')}`
+                Authorization: `Bearer ${localStorage.getItem('token')}`
             },
             body: JSON.stringify(editData.value)
         })
-        if (!response.ok) throw new Error(`Error ${response.status}`)
-        const updated = await response.json()
+
+        const updated = await res.json()
         userInfo.value = updated.user
         editMode.value = false
         alert("Perfil actualizado con éxito")
-    } catch (error) {
-        console.error(error)
+    } catch (e) {
+        console.error(e)
         alert("Error al actualizar el perfil")
     }
 }
 
 async function getCategories() {
-    try {
-        const response = await fetch("http://127.0.0.1:8000/api/categories");
-        if (!response.ok) throw new Error("Error obteniendo categorías")
-        categories.value = await response.json();
-    } catch (err) { console.error(err); }
+    const res = await fetch("http://127.0.0.1:8000/api/categories")
+    categories.value = await res.json()
 }
 
 async function updateWorkerCategories() {
     try {
-        const response = await fetch("http://127.0.0.1:8000/api/worker/categories", {
+        await fetch("http://127.0.0.1:8000/api/worker/categories", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                "Authorization": `Bearer ${localStorage.getItem('token')}`
+                Authorization: `Bearer ${localStorage.getItem('token')}`
             },
             body: JSON.stringify({ categories: selectedCategories.value })
         })
-        if (!response.ok) throw new Error(`Error ${response.status}`)
+
         alert("Categorías actualizadas correctamente")
-        await getUserInfo()
         isEditingCategories.value = false
-    } catch (error) {
-        console.error(error)
+        getUserInfo()
+
+    } catch (e) {
+        console.error(e)
         alert("Error al actualizar categorías")
     }
 }
@@ -130,119 +121,224 @@ onMounted(() => {
 </script>
 
 <template>
-<div class="container py-5">
+  <div class="profile-page">
 
-    <!-- Perfil principal -->
-    <div class="row g-4 mb-4">
+    <!-- CARD PRINCIPAL -->
+    <div class="profile-card">
 
-        <!-- Perfil principal -->
-        <div class="col-md-6">
-            <div class="card shadow-sm p-3 h-100">
-                <div class="row g-0 align-items-center">
-                <div class="col-4 text-center">
-                    <img src="https://via.placeholder.com/120" class="rounded-circle img-fluid" alt="Perfil">
-                </div>
-                <div class="col-8">
-                    <h3>{{ userInfo?.first_name + ' ' + userInfo?.last_name }}</h3>
-                    <p class="text-muted">{{ userInfo?.email }}</p>
-                </div>
-                </div>
-            </div>
+      <!-- CABECERA -->
+      <div class="profile-header">
+        <img
+        :src="userInfo?.profile_picture || '/iconoperfil.png'"
+        class="avatar"
+        />
+
+        <div>
+          <h2>{{ userInfo?.first_name }} {{ userInfo?.last_name }}</h2>
+          <p class="email">{{ userInfo?.email }}</p>
+          <span class="tag" v-if="userType === 1"> Cliente </span>
+          <span class="tag tag-blue" v-if="userType === 2"> Maestro </span>
+          <span class="tag tag-orange" v-if="userType === 3"> Moderador </span>
+        </div>
+      </div>
+
+      <!-- DATOS PERSONALES -->
+      <div class="section-block">
+        <div class="section-header">
+          <h3>Datos personales</h3>
+          <button class="btn-outline" @click="editMode = !editMode">
+            {{ editMode ? 'Cancelar' : 'Editar' }}
+          </button>
         </div>
 
-        <!-- Tipo de usuario -->
-        <div class="col-md-6" v-if="userType">
-            <div class="card shadow-sm p-3 text-center h-100">
-                <h5 v-if="userType === 1">Tu cuenta está configurada como CLIENTE</h5>
-                <h5 v-else-if="userType === 2">Tu cuenta está configurada como MAESTRO</h5>
-                <h5 v-else-if="userType === 3">Tu cuenta está configurada como MODERADOR</h5>
-                <p>Si quieres cambiarla tendrás que registrarte de nuevo.</p>
-            </div>
-        </div>
-
-  </div>
-
-    <!-- Datos personales -->
-    <div class="card mb-4 shadow-sm p-3">
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <h4>Datos personales</h4>
-            <button class="btn btn-outline-primary btn-sm" @click="editMode = !editMode">
-                {{ editMode ? 'Cancelar' : 'Editar perfil' }}
-            </button>
-        </div>
+        <!-- MODO LECTURA -->
         <div v-if="!editMode">
-            <p><strong>Teléfono:</strong> {{ userInfo?.phone_number }}</p>
-            <p><strong>Dirección:</strong> {{ userInfo?.address }}</p>
-            <p><strong>Email:</strong> {{ userInfo?.email }}</p>
+          <p><strong>Teléfono:</strong> {{ userInfo?.phone_number }}</p>
+          <p><strong>Dirección:</strong> {{ userInfo?.address }}</p>
         </div>
-        <div v-else class="row g-3">
-            <div class="col-md-6">
-                <label class="form-label">Nombre</label>
-                <input v-model="editData.fname" type="text" class="form-control">
-            </div>
-            <div class="col-md-6">
-                <label class="form-label">Apellido</label>
-                <input v-model="editData.lname" type="text" class="form-control">
-            </div>
-            <div class="col-md-6">
-                <label class="form-label">Teléfono</label>
-                <input v-model="editData.phone" type="text" class="form-control">
-            </div>
-            <div class="col-md-6">
-                <label class="form-label">Dirección</label>
-                <input v-model="editData.address" type="text" class="form-control">
-            </div>
-            <div class="col-12 mt-3">
-                <button class="btn btn-success" @click="updateProfile">Guardar cambios</button>
-            </div>
-        </div>
-    </div>
 
-    <!-- Categorías (solo maestro) -->
-    <div v-if="userType === 2" class="card mb-4 shadow-sm p-3">
-        <h4>Tus categorías de trabajo</h4>
-        <div v-if="!isEditingCategories">
-            <ul class="list-group mb-3">
-                <li class="list-group-item" v-for="cat in userInfo?.workers?.categories" :key="cat.category_id">
-                    {{ cat.name }}
-                </li>
-            </ul>
-            <button class="btn btn-outline-primary btn-sm" @click="isEditingCategories = true">
-                Editar / Agregar Categorías
-            </button>
-        </div>
-        <div v-else class="mb-3">
-            <div class="form-check" v-for="cat in categories" :key="cat.category_id">
-                <input class="form-check-input" type="checkbox" :value="cat.category_id" v-model="selectedCategories">
-                <label class="form-check-label">{{ cat.name }}</label>
-            </div>
-            <div class="mt-3">
-                <button class="btn btn-success btn-sm" @click="updateWorkerCategories">Guardar Categorías</button>
-                <button class="btn btn-secondary btn-sm ms-2" @click="isEditingCategories = false">Cancelar</button>
-            </div>
-        </div>
-    </div>
+        <!-- MODO EDICIÓN -->
+        <div v-else class="form-grid">
+          <div>
+            <label>Nombre</label>
+            <input v-model="editData.fname" type="text">
+          </div>
+          <div>
+            <label>Apellido</label>
+            <input v-model="editData.lname" type="text">
+          </div>
+          <div>
+            <label>Teléfono</label>
+            <input v-model="editData.phone" type="text">
+          </div>
+          <div>
+            <label>Dirección</label>
+            <input v-model="editData.address" type="text">
+          </div>
 
-    <!-- Información adicional -->
-    <div class="card shadow-sm p-3">
-        <h4>Sobre tu cuenta</h4>
-        <p>Creación de cuenta: {{ new Date(userInfo?.created_at).toLocaleDateString('es-CL') }}</p>
-    </div>
+          <button class="btn-save" @click="updateProfile">Guardar cambios</button>
+        </div>
+      </div>
 
-</div>
+      <!-- CATEGORÍAS (SOLO MAESTRO) -->
+      <div class="section-block" v-if="userType === 2">
+        <div class="section-header">
+          <h3>Categorías de trabajo</h3>
+          <button class="btn-outline" v-if="!isEditingCategories" @click="isEditingCategories = true">
+            Editar categorías
+          </button>
+        </div>
+
+        <!-- Vista normal -->
+        <ul v-if="!isEditingCategories" class="cat-list">
+          <li v-for="cat in userInfo?.workers?.categories" :key="cat.category_id">
+            {{ cat.name }}
+          </li>
+        </ul>
+
+        <!-- Edición -->
+        <div v-else>
+          <div class="checkbox-list">
+            <div v-for="c in categories" :key="c.category_id">
+              <input type="checkbox" :value="c.category_id" v-model="selectedCategories">
+              <label>{{ c.name }}</label>
+            </div>
+          </div>
+
+          <button class="btn-save" @click="updateWorkerCategories">Guardar</button>
+          <button class="btn-cancel" @click="isEditingCategories = false">Cancelar</button>
+        </div>
+      </div>
+
+      <!-- INFORMACIÓN EXTRA -->
+      <div class="section-block">
+        <h3>Información adicional</h3>
+        <p>Miembro desde: <strong>{{ new Date(userInfo?.created_at).toLocaleDateString('es-CL') }}</strong></p>
+      </div>
+
+    </div>
+  </div>
 </template>
-
 <style scoped>
-body {
-    background-color: #f8f9fa;
+.profile-page {
+  background: #eef3f8;
+  min-height: 100vh;
+  padding-bottom: 50px;
+  padding-top: 50px;
 }
 
-.card {
-    border-radius: 10px;
+/* CARD PRINCIPAL */
+.profile-card {
+  max-width: 900px;
+  margin: auto;
+  background:white;
+  padding:35px;
+  border-radius:18px;
+  box-shadow:0 6px 22px rgba(0,0,0,0.08);
 }
 
-img {
-    max-width: 120px;
-    max-height: 120px;
+/* HEADER PERFIL */
+.profile-header {
+  display:flex;
+  align-items:center;
+  gap:25px;
+  margin-bottom:25px;
+}
+
+.avatar {
+  width:120px;
+  height:120px;
+  border-radius:50%;
+  object-fit:cover;
+}
+
+.email {
+  color:#666;
+  font-size:14px;
+}
+
+.tag {
+  display:inline-block;
+  padding:6px 12px;
+  margin-top:8px;
+  border-radius:12px;
+  background:#e5e7eb;
+  font-weight:600;
+}
+
+.tag-blue { background:#d6f0ff; color:#0077b6; }
+.tag-orange { background:#ffe5c2; color:#c46a00; }
+
+/* SECCIONES */
+.section-block {
+  margin-top:30px;
+  padding-top:10px;
+}
+
+.section-header {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:15px;
+}
+
+/* BOTONES */
+.btn-outline {
+  border:1px solid #009fe3;
+  padding:8px 14px;
+  border-radius:8px;
+  color:#009fe3;
+  background:white;
+  cursor:pointer;
+  font-weight:600;
+}
+
+.btn-outline:hover {
+  background:#009fe3;
+  color:white;
+}
+
+.btn-save {
+  margin-top:15px;
+  background:#009fe3;
+  color:white;
+  border:none;
+  padding:12px 18px;
+  border-radius:10px;
+  font-weight:700;
+}
+
+.btn-cancel {
+  margin-left:10px;
+  background:#ccc;
+  color:white;
+  border:none;
+  padding:12px 18px;
+  border-radius:10px;
+  font-weight:700;
+}
+
+/* FORMULARIO */
+.form-grid {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:20px;
+}
+
+input {
+  width:100%;
+  padding:10px;
+  border-radius:10px;
+  border:1px solid #cfd8e3;
+}
+
+/* CATEGORÍAS */
+.cat-list li {
+  padding:6px 0;
+  border-bottom:1px solid #eee;
+}
+
+.checkbox-list div {
+  margin-bottom:6px;
 }
 </style>

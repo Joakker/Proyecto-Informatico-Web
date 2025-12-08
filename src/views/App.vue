@@ -5,60 +5,65 @@
     <nav class="navbar navbar-expand-lg enhanced-navbar px-4">
       <div class="container-fluid d-flex align-items-center justify-content-between">
 
-        <!-- LOGO SOLO -->
+        <!-- LOGO -->
         <div class="d-flex align-items-center brand-area">
           <img src="/logo2.png" alt="Logo Maestro Chasquilla" class="brand-logo" />
         </div>
 
         <!-- LINKS -->
         <div class="d-flex align-items-center gap-3 nav-links">
-          <router-link to="/" class="nav-link-custom">Inicio</router-link>
-          <router-link to="/clientrequests" class="nav-link-custom">Trabajos</router-link>
-          <template v-if="isLoggedIn && (userType === 2 || userType === 3)">
+
+          <!-- SOLO SI ESTÁ LOGEADO y NO es moderador -->
+          <template v-if="isLoggedIn">
+            <router-link to="/" class="nav-link-custom">Inicio</router-link>
+            <router-link to="/clientrequests" class="nav-link-custom">Trabajos</router-link>
             <router-link to="/workerrequests" class="nav-link-custom">Trabajadores</router-link>
+            <router-link to="/search-workers" class="nav-link-custom">Buscar maestro</router-link>
+        
           </template>
-          <router-link to="/search-workers" class="nav-link-custom">Buscar maestro</router-link>
 
           <template v-if="isLoggedIn && userType !== 3">
             <router-link to="/support" class="nav-link-custom">Soporte</router-link>
           </template>
 
+          <!-- SOLO PARA MODERADOR -->
           <template v-if="isLoggedIn && userType === 3">
             <router-link to="/modpage" class="nav-link-custom">Moderación</router-link>
           </template>
+
         </div>
 
-        <!-- BOTONES -->
+        <!-- BOTONES DERECHA -->
         <div class="d-flex align-items-center gap-2">
 
-          <!-- LOGGED -->
+          <!-- LOGEADO -->
           <template v-if="isLoggedIn">
             <router-link to="/profile" class="btn btn-outline-light modern-btn">Perfil</router-link>
             <button @click="logout" class="btn btn-light modern-btn">Cerrar sesión</button>
           </template>
 
-          <!-- NOT LOGGED -->
+          <!-- NO LOGEADO -->
           <template v-else>
             <router-link to="/login" class="btn btn-outline-light modern-btn">Iniciar sesión</router-link>
             <router-link to="/signup" class="btn btn-primary hero-btn-main">Registrarse</router-link>
           </template>
 
         </div>
+
       </div>
     </nav>
 
-    <!-- MAIN -->
     <main class="flex-grow-1">
       <router-view />
     </main>
 
-    <!-- FOOTER -->
     <footer class="enhanced-footer text-center py-4 mt-auto">
       <small>Maestro Chasquilla 2025 © Todos los derechos reservados</small>
     </footer>
 
   </div>
 </template>
+
 
 
 <script setup lang="ts">
