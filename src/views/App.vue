@@ -14,7 +14,9 @@
         <div class="d-flex align-items-center gap-3 nav-links">
           <router-link to="/" class="nav-link-custom">Inicio</router-link>
           <router-link to="/clientrequests" class="nav-link-custom">Trabajos</router-link>
-          <router-link to="/workerrequests" class="nav-link-custom">Trabajadores</router-link>
+          <template v-if="isLoggedIn && (userType === 2 || userType === 3)">
+            <router-link to="/workerrequests" class="nav-link-custom">Trabajadores</router-link>
+          </template>
           <router-link to="/search-workers" class="nav-link-custom">Buscar maestro</router-link>
 
           <template v-if="isLoggedIn && userType !== 3">

@@ -80,7 +80,7 @@ onMounted(() => {
               <!-- Cliente -->
               <template v-if="isLoggedIn && userType === 1">
                 <router-link to="/search-workers" class="btn btn-primary hero-btn-main">Buscar maestro</router-link>
-                <router-link to="/clientrequests" class="btn btn-outline-light hero-btn-secondary">Ver mis trabajos</router-link>
+                <router-link to="/clientrequests" class="btn btn-outline-light hero-btn-secondary">Ver mis trabajos solicitados</router-link>
               </template>
 
               <!-- Maestro -->
