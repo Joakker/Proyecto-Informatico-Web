@@ -38,10 +38,33 @@ async function getUserType() {
 
 onMounted(async () => {
     try {
-        if (isLoggedIn.value) getUserType()
-        const response = await fetch('http://127.0.0.1:8000/api/clientrequests')
+        if (isLoggedIn.value) {
+            await getUserType()
+        }
+
+        let endpoint = ''
+        if (userType.value === 1) {
+            endpoint = 'http://127.0.0.1:8000/api/my-requests'
+        }
+        // maestros y moderadores ven todas las solicitudes
+        else if (userType.value === 2 || userType.value === 3) {
+            endpoint = 'http://127.0.0.1:8000/api/clientrequests'
+        }
+        // usuario no autenticado las ve todas. ELIMINAR???
+        else {
+            endpoint = 'http://127.0.0.1:8000/api/clientrequests'
+        }
+
+        const response = await fetch(endpoint, {
+            headers: {
+                'Accept': 'application/json',
+                'Authorization': `Bearer ${localStorage.getItem('token')}`
+            }
+        })
+
         const data = await response.json()
         works.value = data
+
     } catch (error) {
         console.error('Error fetching works:', error)
     } finally {
