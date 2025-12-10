@@ -1,7 +1,8 @@
 
 <script setup lang="ts">
 import { useRouter } from 'vue-router'
-import { defineProps, ref, onMounted, defineEmits } from 'vue'
+//import { defineProps, ref, onMounted, defineEmits } from 'vue'
+import {ref, onMounted } from 'vue'
 
 const props = defineProps<{
   work: { client_request_id: number, title: string, description: string, budget: number }
