@@ -16,7 +16,7 @@
           <router-link to="/clientrequests" class="nav-link-custom">Trabajos</router-link>
           <router-link to="/workerrequests" class="nav-link-custom">Trabajadores</router-link>
           <router-link to="/search-workers" class="nav-link-custom">Buscar maestro</router-link>
-
+          <router-link to="/work-chats" class="nav-link-custom">Chats de trabajo</router-link>
           <template v-if="isLoggedIn && userType !== 3">
             <router-link to="/support" class="nav-link-custom">Soporte</router-link>
           </template>

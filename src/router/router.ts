@@ -11,6 +11,8 @@ import CreateClientRequest from '@/views/CreateClientRequest.vue'
 import ClientRequestDetail from '@/views/ClientRequestDetail.vue'
 import ModPage from '@/views/ModPage.vue'
 import SupportChat from '@/views/SupportChat.vue'
+import WorkChats from '@/views/WorkChats.vue'
+import WorkChat from '@/views/WorkChat.vue'
 
 const routes = [
   {
@@ -77,6 +79,18 @@ const routes = [
     path: '/support',
     name: 'Support',
     component: SupportChat
+  }, 
+
+  {
+    path: '/work-chats',
+    name: 'WorkChats',
+    component: WorkChats
+  },
+  {
+    path: '/work-chat/:id',
+    name: 'WorkChat',
+    component: WorkChat,
+    props: true
   }
 
 ]
