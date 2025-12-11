@@ -1,15 +1,12 @@
 <script setup lang="ts">
-import { useRouter } from "vue-router";
-import { defineProps, ref, onMounted, defineEmits } from "vue";
+import { useRouter } from 'vue-router'
+//import { defineProps, ref, onMounted, defineEmits } from 'vue'
+import {ref, onMounted } from 'vue'
 
 const props = defineProps<{
-  work: {
-    client_request_id: number;
-    title: string;
-    description: string;
-    budget: number;
-  };
-}>();
+  work: { client_request_id: number, title: string, description: string, budget: number }
+  isModerator?: boolean
+}>()
 
 const userType = ref<number | null>(null);
 const showModal = ref(false);
