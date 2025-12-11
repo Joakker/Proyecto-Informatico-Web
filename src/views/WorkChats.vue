@@ -45,6 +45,15 @@ function openChat(id: number) {
   router.push(`/work-chat/${id}`)
 }
 
+function formatChileTime(dateString: string) {
+  const date = new Date(dateString)
+  return date.toLocaleString("es-CL", {
+    timeZone: "America/Santiago",
+    dateStyle: "medium",
+    timeStyle: "short"
+  })
+}
+
 
 onMounted(async () => {
   try {
@@ -74,27 +83,27 @@ onMounted(async () => {
         class="chat-item"
         @click="openChat(chat.conversation_id)"
       >
-        <!-- TITULO DEL TRABAJO -->
+        <!-- título del trabajo -->
         <h5 class="fw-bold">
           {{ chat.work.client_request?.title || "Trabajo sin título" }}
         </h5>
 
         <!-- nombre de usuarios -->
-        <p class="m-0" v-if="userInfo.client && chat.worker">
-          Maestro: {{ chat.worker.user.first_name }} {{ chat.worker.user.last_name }}
+        <p class="m-0" v-if="chat.client?.user && chat.client.user.user_id !== userInfo.user_id">
+            Cliente: {{ chat.client.user.first_name }} {{ chat.client.user.last_name }}
         </p>
 
-        <p class="m-0" v-if="userInfo.workers && chat.client">
-          Cliente: {{ chat.client.user.first_name }} {{ chat.client.user.last_name }}
+        <p class="m-0" v-if="chat.worker?.user && chat.worker.user.user_id !== userInfo.user_id">
+            Maestro: {{ chat.worker.user.first_name }} {{ chat.worker.user.last_name }}
         </p>
 
         <!-- estado -->
         <small class="text-muted d-block">Estado: {{ chat.work.state }}</small>
 
-        <!-- fecha -->
+        <!-- fecha 
         <small class="text-muted">
-          Última actualización: {{ chat.updated_at }}
-        </small>
+            Última actualización: {{ formatChileTime(chat.updated_at) }}
+        </small>-->
       </div>
 
       <p v-if="chats.length === 0" class="text-muted text-center mt-4">

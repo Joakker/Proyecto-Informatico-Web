@@ -57,14 +57,30 @@ onMounted(async () => {
 
     <div v-else class="chat-container">
       <h5 v-if="conversation">
-        Trabajo #{{ conversation.work?.work_id || 'N/A' }}
-
+        <!--Trabajo #{{ conversation.work?.work_id || 'N/A' }}
+        
         <span v-if="conversation.client?.user">
             — Cliente: {{ conversation.client.user.first_name }} {{ conversation.client.user.last_name }}
         </span>
 
         <span v-if="conversation.worker?.user">
             — Maestro: {{ conversation.worker.user.first_name }} {{ conversation.worker.user.last_name }}
+        </span> -->
+
+        <!-- Mostrar solo al cliente si NO es el user logeado -->
+        <span
+            v-if="conversation.client?.user
+            && conversation.client.user.user_id !== userInfo.user_id"
+        >
+             {{ conversation.client.user.first_name }} {{ conversation.client.user.last_name }}
+        </span>
+
+        <!-- Mostrar solo al maestro si NO es el user logeado -->
+        <span
+            v-if="conversation.worker?.user
+            && conversation.worker.user.user_id !== userInfo.user_id"
+        >
+             {{ conversation.worker.user.first_name }} {{ conversation.worker.user.last_name }}
         </span>
        </h5>
 

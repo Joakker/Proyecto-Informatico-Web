@@ -47,8 +47,11 @@ onUnmounted(() => {
       class="message"
       :class="{ mine: m.sender_id === currentUserId }"
     >
+
+      <small class="sender-name">
+        {{ m.sender_id === currentUserId ? "Tú" : m.sender?.first_name }}
+      </small>
       <div class="bubble">{{ m.content }}</div>
-      <small>{{ m.created_at }}</small>
     </div>
   </div>
 </template>
@@ -75,6 +78,17 @@ onUnmounted(() => {
 }
 .message.mine .bubble {
   background: #cde5ff;
+}
+
+.sender-name {
+  font-size: 12px;
+  color: #777;
+  margin-bottom: 3px;
+  display: block;
+}
+
+.message.mine .sender-name {
+  text-align: right;
 }
 </style>
 
