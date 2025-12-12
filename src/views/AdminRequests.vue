@@ -28,8 +28,9 @@ const filteredWorks = computed(() =>
 );
 
 function goBack() {
-  router.back();
+  router.push('/Modpage');
 }
+
 
 onMounted(getWorks);
 </script>

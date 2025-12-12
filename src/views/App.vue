@@ -15,14 +15,15 @@
 
           <template v-if="isLoggedIn">
             <router-link to="/" class="nav-link-custom">Inicio</router-link>
+
           </template>
           <!-- SOLO SI ESTÁ LOGEADO y NO es moderador -->
           <template v-if="isLoggedIn && userType !== 3">
             <router-link to="/clientrequests" class="nav-link-custom">Trabajos</router-link>
-            <router-link to="/search-workers" class="nav-link-custom">Buscar maestro</router-link>
-        
           </template>
-
+          <template v-if="isLoggedIn && userType === 1">
+            <router-link to="/search-workers" class="nav-link-custom">Buscar maestro</router-link>
+          </template>
           <template v-if="isLoggedIn && userType !== 3">
             <router-link to="/support" class="nav-link-custom">Soporte</router-link>
           </template>
