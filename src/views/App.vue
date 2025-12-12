@@ -25,6 +25,7 @@
             <router-link to="/search-workers" class="nav-link-custom">Buscar maestro</router-link>
           </template>
           <template v-if="isLoggedIn && userType !== 3">
+            <router-link to="/work-chats" class="nav-link-custom">Chats de trabajo</router-link>
             <router-link to="/support" class="nav-link-custom">Soporte</router-link>
           </template>
 

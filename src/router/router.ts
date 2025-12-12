@@ -12,6 +12,8 @@ import ClientRequestDetail from '@/views/ClientRequestDetail.vue'
 
 import ModPage from '@/views/ModPage.vue'
 import SupportChat from '@/views/SupportChat.vue'
+import WorkChats from '@/views/WorkChats.vue'
+import WorkChat from '@/views/WorkChat.vue'
 
 // NUEVAS VISTAS ADMIN
 import AdminRequests from '@/views/AdminRequests.vue'
@@ -104,6 +106,18 @@ const routes = [
     path: '/admin/tickets',
     name: 'AdminTickets',
     component: AdminTickets
+  }, 
+
+  {
+    path: '/work-chats',
+    name: 'WorkChats',
+    component: WorkChats
+  },
+  {
+    path: '/work-chat/:id',
+    name: 'WorkChat',
+    component: WorkChat,
+    props: true
   }
 ]
 
