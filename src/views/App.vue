@@ -12,13 +12,6 @@
 
         <!-- LINKS -->
         <div class="d-flex align-items-center gap-3 nav-links">
-          <router-link to="/" class="nav-link-custom">Inicio</router-link>
-          <router-link to="/clientrequests" class="nav-link-custom">Trabajos</router-link>
-          <router-link to="/workerrequests" class="nav-link-custom">Trabajadores</router-link>
-          <router-link to="/search-workers" class="nav-link-custom">Buscar maestro</router-link>
-          <router-link to="/work-chats" class="nav-link-custom">Chats de trabajo</router-link>
-          <router-link to="/my-works" class="nav-link-custom">Dejar reseña</router-link>
-
           <template v-if="isLoggedIn">
             <router-link to="/" class="nav-link-custom">Inicio</router-link>
 
