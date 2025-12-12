@@ -91,6 +91,19 @@ const routes = [
     name: 'WorkChat',
     component: WorkChat,
     props: true
+  },
+
+  {
+    path: '/my-works',
+    name: 'my-works',
+    component: () => import('@/views/MyWorks.vue')
+  },
+  
+  {
+    path: '/work/:id',
+    name: 'work-detail',
+    component: () => import('@/views/WorkDetail.vue'),
+    props: true
   }
 
 ]
