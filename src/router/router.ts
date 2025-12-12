@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
+
 import Signup from '../views/Sign-up.vue'
-import App from '../views/App.vue'
 import Home from '../views/Home.vue'
 import ClientRequests from '../views/ClientRequests.vue'
 import WorkerRequests from '@/views/WorkerRequests.vue'
@@ -9,66 +9,84 @@ import LogIn from '@/views/Log-in.vue'
 import Profile from '@/views/Profile.vue'
 import CreateClientRequest from '@/views/CreateClientRequest.vue'
 import ClientRequestDetail from '@/views/ClientRequestDetail.vue'
+
 import ModPage from '@/views/ModPage.vue'
 import SupportChat from '@/views/SupportChat.vue'
 import WorkChats from '@/views/WorkChats.vue'
 import WorkChat from '@/views/WorkChat.vue'
 
+// NUEVAS VISTAS ADMIN
+import AdminRequests from '@/views/AdminRequests.vue'
+import AdminUsers from '@/views/AdminUsers.vue'
+import AdminTickets from '@/views/AdminTickets.vue'
+import SignupMod from '@/views/Sign-upMod.vue'
+
 const routes = [
+  // AUTH
   {
     path: '/signup',
     name: 'Signup',
     component: Signup
   },
-
   {
     path: '/login',
     name: 'Login',
     component: LogIn
   },
 
+  // HOME
   {
     path: '/',
     name: 'Home',
     component: Home
   },
 
+  // CLIENT REQUESTS
   {
     path: '/clientrequests',
     name: 'ClientRequests',
     component: ClientRequests
   },
-
   {
-    path: '/workerrequests',
-    name: 'WorkerRequests',
-    component: WorkerRequests
+    path: '/clientrequests/:id',
+    name: 'ClientRequestDetail',
+    component: ClientRequestDetail
   },
-
-  {
-    path: '/profile',
-    name: 'Profile',
-    component: Profile
-  },
-
   {
     path: '/createclientrequest',
     name: 'CreateClientRequest',
     component: CreateClientRequest
   },
 
+  // WORKER REQUESTS
   {
-    path: '/clientrequests/:id',
-    name: 'ClientRequestDetail',
-    component: ClientRequestDetail
+    path: '/workerrequests',
+    name: 'WorkerRequests',
+    component: WorkerRequests
   },
 
+  // SEARCH
   {
-    path: '/search-workers', 
+    path: '/search-workers',
     name: 'SearchWorkers',
     component: SearchWorkers
   },
 
+  // PROFILE
+  {
+    path: '/profile',
+    name: 'Profile',
+    component: Profile
+  },
+
+  // SUPPORT
+  {
+    path: '/support',
+    name: 'Support',
+    component: SupportChat
+  },
+
+  // 🛠 ADMIN PANEL (Nuevo)
   {
     path: '/modpage',
     name: 'ModPage',
@@ -76,9 +94,19 @@ const routes = [
   },
 
   {
-    path: '/support',
-    name: 'Support',
-    component: SupportChat
+    path: '/admin/requests',
+    name: 'AdminRequests',
+    component: AdminRequests
+  },
+  {
+    path: '/admin/users',
+    name: 'AdminUsers',
+    component: AdminUsers
+  },
+  {
+    path: '/admin/tickets',
+    name: 'AdminTickets',
+    component: AdminTickets
   }, 
 
   {
@@ -104,6 +132,11 @@ const routes = [
     name: 'work-detail',
     component: () => import('@/views/WorkDetail.vue'),
     props: true
+  },
+  {
+  path: '/admin/create-moderator',
+  name: 'CreateModerator',
+  component: SignupMod
   }
 
 ]

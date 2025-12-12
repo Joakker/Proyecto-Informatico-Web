@@ -1,239 +1,113 @@
 <script setup lang="ts">
-import { useUserStore } from '@/stores/user'
-import { computed, onMounted, ref } from 'vue'
-import WorkRequestCard from '../components/ClientRequestCard.vue'
-import SupportTicket from './SupportTicket.vue'
+import { ref, computed, onMounted } from "vue";
+import { useUserStore } from "@/stores/user";
 
-interface WorkRequest {
-  client_request_id: number
-  title: string
-  description: string
-  budget: number
-}
+const userStore = useUserStore();
+const isLoggedIn = computed(() => userStore.user !== null);
 
-interface User {
-    user_id: number
-    first_name: string
-    last_name: string
-    email: string
-    type: number
-}
+const userType = ref<number | null>(null);
 
-interface Conversation {
-    conversation_id: number
-    mod_id: number
-    user_id: number
-    created_at: string
-    updated_at: string
-}
-
-const userStore = useUserStore()
-const isLoggedIn = computed(() => userStore.user !== null)
-
-const works = ref<WorkRequest[]>([])
-const userType = ref<number|null>(null)
-const userInfo = ref()
-const userList = ref<User[]>([])
-const userTickets = ref<Conversation[]>([])
-const expandedTickets = ref<number[]>([])
-
-function toggleTicket(conversationId: number) {
-  if (expandedTickets.value.includes(conversationId)) {
-    expandedTickets.value = expandedTickets.value.filter(id => id !== conversationId)
-  } else {
-    expandedTickets.value.push(conversationId)
-  }
-}
-
+// Obtiene el tipo de usuario: 1 cliente, 2 maestro, 3 moderador
 async function getUserType() {
-    try {
-        const response = await fetch('http://127.0.0.1:8000/api/user/type', {
-            headers: {
-                'Accept': 'application/json',
-                'Authorization': `Bearer ${localStorage.getItem('token')}`
-            }
-        })
-        if (!response.ok) throw new Error(`Error ${response.status}`)
-        const data = await response.json()
-        userType.value = data.type
-    } catch (error) {
-        console.error(error)
-    }
+  const res = await fetch("http://127.0.0.1:8000/api/user/type", {
+    headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+  });
+  userType.value = (await res.json()).type;
 }
 
-async function getUserInfo() {
-    try {
-        const response = await fetch('http://127.0.0.1:8000/api/user', {
-            headers: {
-                'Accept': 'application/json',
-                'Authorization': `Bearer ${localStorage.getItem('token')}`
-            }
-        })
-        if (!response.ok) throw new Error(`Error ${response.status}`)
-        userInfo.value = await response.json()
-    } catch (error) {
-        console.error(error)
-    }
-}
-
-async function getUsersList() {
-    try {
-        const response = await fetch('http://127.0.0.1:8000/api/get_users', {
-            headers: {
-                'Accept': 'application/json',
-                'Authorization': `Bearer ${localStorage.getItem('token')}`
-            }
-        })
-        if (!response.ok) throw new Error(`Error ${response.status}`)
-        userList.value = await response.json()
-    } catch (error) {
-        console.error(error)
-    }
-}
-
-async function deleteUser(userId: number) {
-    try {
-        const response = await fetch(`http://127.0.0.1:8000/api/users/${userId}`, {
-            method: 'DELETE',
-            headers: {
-                'Accept': 'application/json',
-                'Authorization': `Bearer ${localStorage.getItem('token')}`
-            }
-        })
-        if (!response.ok) throw new Error(`Error ${response.status}`)
-        userList.value = userList.value.filter(u => u.user_id !== userId)
-    } catch (error) {
-        console.error(error)
-    }
-}
-
-async function getTickets() {
-    try {
-        const response = await fetch('http://127.0.0.1:8000/api/mod_conversations', {
-            headers: {
-                'Accept': 'application/json',
-                'Authorization': `Bearer ${localStorage.getItem('token')}`
-            }
-        })
-        if (!response.ok) throw new Error(`Error ${response.status}`)
-        const result = await response.json()
-        userTickets.value = result.data
-    } catch (error) {
-        console.error(error)
-    }
-}
-
-async function getWorks() {
-    try {
-        const response = await fetch('http://127.0.0.1:8000/api/clientrequests', {
-            headers: {
-                'Accept': 'application/json',
-                'Authorization': `Bearer ${localStorage.getItem('token')}`
-            }
-        })
-        if (!response.ok) throw new Error(`Error ${response.status}`)
-        works.value = await response.json()
-    } catch (error) {
-        console.error(error)
-    }
-}
-
-onMounted(async () => {
-    if (isLoggedIn.value) {
-        await Promise.all([getWorks(), getTickets(), getUserType(), getUserInfo(), getUsersList()])
-    }
-})
+onMounted(() => {
+  if (isLoggedIn.value) getUserType();
+});
 </script>
 
 <template>
-<template v-if="userType !== 3">
-    <div class="text-center my-5">
-        <div class="alert alert-danger">
-            No tienes privilegios para entrar a esta página 😅
-        </div>
+  <!-- BLOQUEO A NO-MODERADORES -->
+  <template v-if="userType !== 3">
+    <div class="denied">
+      <div class="denied-card">
+        <h2>No tienes permiso para acceder 🛑</h2>
+        <p>Solo los moderadores pueden entrar al panel administrativo.</p>
+      </div>
     </div>
-</template>
+  </template>
 
-<template v-else>
-<div class="container my-5">
+  <!-- PANEL PRINCIPAL -->
+  <template v-else>
+    <div class="admin-wrapper">
 
-    <!-- Solicitudes de clientes -->
-    <h3 class="mb-4">Solicitudes de clientes</h3>
-    <div class="row g-4">
-        <div class="col-md-6 col-lg-4" v-for="work in works" :key="work.client_request_id">
-            <WorkRequestCard @child-action="getWorks()" :work="work" />
+      <!-- HERO -->
+      <section class="hero">
+        <div class="hero-left">
+          <div class="hero-icon">🛠️</div>
+          <div>
+            <h1>Panel Administrativo</h1>
+            <p>Selecciona la sección que deseas gestionar.</p>
+          </div>
         </div>
+      </section>
+
+      <!-- OPCIONES -->
+      <div class="admin-links">
+        <router-link to="/admin/requests" class="admin-btn">📄 Solicitudes</router-link>
+        <router-link to="/admin/users" class="admin-btn">👥 Usuarios</router-link>
+        <router-link to="/admin/tickets" class="admin-btn">🎫 Tickets</router-link>
+          <router-link to="/admin/create-moderator" class="admin-btn">🤖 Crear Moderador</router-link>
+      </div>
+
     </div>
-
-    <hr class="my-5">
-
-    <!-- Lista de usuarios como lista vertical -->
-    <h3 class="mb-4">Lista de usuarios</h3>
-    <ul class="list-group">
-        <li class="list-group-item d-flex justify-content-between align-items-center" v-for="user in userList" :key="user.user_id">
-            <span>{{ user.first_name }} {{ user.last_name }} - {{ user.email }}</span>
-            <button class="btn btn-danger btn-sm" @click="deleteUser(user.user_id)">
-                Eliminar
-            </button>
-        </li>
-    </ul>
-
-    <h3 class="mb-4">Tickets</h3>
-    <ul class="list-group">
-        <li v-for="ticket in userTickets" :key="ticket.conversation_id">
-            <div class="list-group-item d-flex justify-content-between align-items-center">
-
-                <button 
-                    class="btn btn-link btn-sm" 
-                    @click="toggleTicket(ticket.conversation_id)"
-                >
-                    <i 
-                        :class="expandedTickets.includes(ticket.conversation_id) 
-                        ? 'bi bi-chevron-up' 
-                        : 'bi bi-chevron-down'"
-                    ></i>
-                </button>
-
-                <span>Usuario {{ ticket.user_id }}</span>
-                <span>Ticket creado el {{ ticket.created_at }}</span>
-            </div>
-
-            <transition name="slide">
-                <div v-if="expandedTickets.includes(ticket.conversation_id)">
-                    <SupportTicket :conversation_id="ticket.conversation_id" />
-                </div>
-            </transition>
-        </li>
-    </ul>
-
-</div>
-</template>
+  </template>
 </template>
 
 <style scoped>
-h3 {
-    font-weight: 600;
+@import "./ModPageStyles.css";
+
+/* ESTILOS SOLO PARA ESTA VISTA */
+
+.admin-links {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  max-width: 400px;
+  margin: 0 auto;
 }
 
-hr {
-    border-top: 2px solid #dee2e6;
+.admin-btn {
+  display: block;
+  text-align: center;
+  padding: 15px 20px;
+  background: #009fe3;
+  color: white;
+  border-radius: 12px;
+  font-weight: 600;
+  text-decoration: none;
+  font-size: 18px;
+  box-shadow: 0 5px 16px rgba(0, 159, 227, 0.30);
+  transition: 0.2s ease;
 }
 
-.slide-enter-active,
-.slide-leave-active {
-  transition: all 0.3s ease;
-}
-.slide-enter-from,
-.slide-leave-to {
-  max-height: 0;
-  opacity: 0;
-  overflow: hidden;
-}
-.slide-enter-to,
-.slide-leave-from {
-  max-height: 500px; /* ajusta según contenido */
-  opacity: 1;
+.admin-btn:hover {
+  background: #007bb3;
+  transform: translateY(-2px);
 }
 
+/* DENIED VIEW */
+.denied {
+  display: flex;
+  justify-content: center;
+  margin-top: 80px;
+}
+
+.denied-card {
+  background: white;
+  padding: 40px;
+  border-radius: 16px;
+  text-align: center;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+  max-width: 500px;
+}
+
+.denied-card h2 {
+  margin-bottom: 10px;
+}
 
 </style>
