@@ -134,7 +134,18 @@ onMounted(() => {
         />
 
         <div>
-          <h2>{{ userInfo?.first_name }} {{ userInfo?.last_name }}</h2>
+          <div class="name-row">
+            <h2 class="username">
+              {{ userInfo?.first_name }} {{ userInfo?.last_name }}
+            </h2>
+
+            <span
+              v-if="userType === 1 || userType === 2"
+              class="score-inline"
+            >
+              ⭐ {{ userInfo?.score ?? 'Sin calificación' }}/5
+            </span>
+        </div>
           <p class="email">{{ userInfo?.email }}</p>
           <span class="tag" v-if="userType === 1"> Cliente </span>
           <span class="tag tag-blue" v-if="userType === 2"> Maestro </span>
@@ -341,4 +352,24 @@ input {
 .checkbox-list div {
   margin-bottom:6px;
 }
+
+.name-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.username {
+  margin: 0;
+}
+
+.score-inline {
+  font-size: 14px;
+  font-weight: 600;
+  color: #f59e0b;
+  background: #fff7e6;
+  padding: 4px 10px;
+  border-radius: 12px;
+}
+
 </style>
