@@ -51,6 +51,7 @@ onMounted(() => {
         <router-link to="/admin/requests" class="admin-btn">📄 Solicitudes</router-link>
         <router-link to="/admin/users" class="admin-btn">👥 Usuarios</router-link>
         <router-link to="/admin/tickets" class="admin-btn">🎫 Tickets</router-link>
+          <router-link to="/admin/create-moderator" class="admin-btn">🤖 Crear Moderador</router-link>
       </div>
 
     </div>

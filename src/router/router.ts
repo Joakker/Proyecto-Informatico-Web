@@ -19,6 +19,7 @@ import WorkChat from '@/views/WorkChat.vue'
 import AdminRequests from '@/views/AdminRequests.vue'
 import AdminUsers from '@/views/AdminUsers.vue'
 import AdminTickets from '@/views/AdminTickets.vue'
+import SignupMod from '@/views/Sign-upMod.vue'
 
 const routes = [
   // AUTH
@@ -118,7 +119,13 @@ const routes = [
     name: 'WorkChat',
     component: WorkChat,
     props: true
+  },
+  {
+  path: '/admin/create-moderator',
+  name: 'CreateModerator',
+  component: SignupMod
   }
+
 ]
 
 const router = createRouter({

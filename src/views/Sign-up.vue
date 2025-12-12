@@ -117,17 +117,6 @@ async function CreateAccount() {
             <div class="fw-bold mt-2">Trabajador</div>
             <div class="text-muted small">Necesito encontrar trabajo</div>
           </div>
-
-          <!-- Esta es para crear un moderador-->
-          <div 
-            class="card p-3 text-center w-50 ms-2 cursor-pointer"
-            :class="pick === moderador ? 'border-primary shadow' : 'border-light'"
-            @click="pick = moderador"
-          >
-            <i class="bi bi-android2 fs-1 text-primary"></i>
-            <div class="fw-bold mt-2">Moderador</div>
-            <div class="text-muted small">Opción super secreta para ser moderador</div>
-          </div>
         </div>
 
         <button type="submit" class="btn btn-primary w-100 mt-3">Crear cuenta</button>
