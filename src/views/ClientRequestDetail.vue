@@ -84,25 +84,46 @@ onMounted(async () => {
   await loadRequest()
 })
 
+
 // -------------------------
 // Maestro: tomar trabajo
 // -------------------------
 async function TakeJob() {
-  await fetch(`http://127.0.0.1:8000/api/create_work`, {
-    method: "POST",
-    headers: {
-      "Authorization": `Bearer ${localStorage.getItem("token")}`,
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      client_id: request.value?.client_id,
-      client_request_id: request.value?.client_request_id,
-      state: "postulado"
+  try {
+    const res = await fetch(`http://127.0.0.1:8000/api/create_work`, {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${localStorage.getItem("token")}`,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        client_id: request.value?.client_id,
+        client_request_id: request.value?.client_request_id,
+        state: "postulado"
+      })
     })
-  })
-  alert("Has postulado al trabajo.")
-  await loadRequest()
+
+    const data = await res.json()
+
+    if (!res.ok) {
+      if (res.status === 409) {
+        alert("Ya postulaste a este trabajo.")
+        return
+      }
+
+      alert(data.error || "No se pudo postular al trabajo.")
+      return
+    }
+
+    alert("Has postulado al trabajo.")
+    await loadRequest()
+
+  } catch (error) {
+    console.error(error)
+    alert("Error de conexión.")
+  }
 }
+
 
 // -------------------------
 // Cliente: seleccionar maestro
