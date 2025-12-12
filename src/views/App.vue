@@ -27,6 +27,7 @@
             <router-link to="/work-chats" class="nav-link-custom">Chats de trabajo</router-link>
             <router-link to="/support" class="nav-link-custom">Soporte</router-link>
             <router-link to="/my-works" class="nav-link-custom">Dejar reseña</router-link>
+            <router-link to="/my-reviews" class="nav-link-custom">Mis reseñas</router-link>
           </template>
 
           <!-- SOLO PARA MODERADOR -->

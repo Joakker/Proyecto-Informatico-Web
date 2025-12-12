@@ -137,7 +137,14 @@ const routes = [
   path: '/admin/create-moderator',
   name: 'CreateModerator',
   component: SignupMod
+  },
+
+  {
+    path: '/my-reviews',
+    name: 'my-reviews',
+    component: () => import('@/views/MyReviews.vue')
   }
+
 
 ]
 

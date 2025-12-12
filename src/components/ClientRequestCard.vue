@@ -41,34 +41,38 @@ async function deletePostConfirmed() {
   try {
     isDeleting.value = true;
 
-    const response = await fetch(
-      `http://127.0.0.1:8000/api/client_requests/${props.work.client_request_id}`,
-      {
-        method: "DELETE",
-        headers: {
-          Accept: "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      }
-    );
+    // Elegir endpoint según tipo de usuario
+    const endpoint =
+      userType.value === 1
+        ? `http://127.0.0.1:8000/api/my-client-requests/${props.work.client_request_id}`
+        : `http://127.0.0.1:8000/api/client_requests/${props.work.client_request_id}`;
+
+    const response = await fetch(endpoint, {
+      method: "DELETE",
+      headers: {
+        Accept: "application/json",
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    });
+
+    const data = await response.json();
 
     if (!response.ok) {
-      console.error(`Error ${response.status}`);
-      // si quieres algo visual:
-      // alert('No se pudo eliminar la solicitud');
+      console.error(data.error || "No se pudo eliminar la solicitud");
       return;
     }
 
-    // Avisar al padre cuál id se eliminó
+    // Avisar al padre que se eliminó
     emit("child-action", { id: props.work.client_request_id });
 
   } catch (error) {
     console.error(error);
   } finally {
     isDeleting.value = false;
-    showModal.value = false; // SIEMPRE se cierra el modal
+    showModal.value = false;
   }
 }
+
 
 onMounted(() => {
   getUserType();
