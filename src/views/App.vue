@@ -13,11 +13,12 @@
         <!-- LINKS -->
         <div class="d-flex align-items-center gap-3 nav-links">
 
-          <!-- SOLO SI ESTÁ LOGEADO y NO es moderador -->
           <template v-if="isLoggedIn">
             <router-link to="/" class="nav-link-custom">Inicio</router-link>
+          </template>
+          <!-- SOLO SI ESTÁ LOGEADO y NO es moderador -->
+          <template v-if="isLoggedIn && userType !== 3">
             <router-link to="/clientrequests" class="nav-link-custom">Trabajos</router-link>
-            <router-link to="/workerrequests" class="nav-link-custom">Trabajadores</router-link>
             <router-link to="/search-workers" class="nav-link-custom">Buscar maestro</router-link>
         
           </template>

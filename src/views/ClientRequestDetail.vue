@@ -38,6 +38,9 @@ interface ClientRequest {
 const route = useRoute()
 const requestId = route.params.id as string
 
+const isAdmin = computed(() => userType.value === 3)
+
+
 const request = ref<ClientRequest | null>(null)
 
 const accepting = ref(false)
@@ -197,9 +200,13 @@ async function acceptJob() {
         Tomar trabajo
       </button>
 
-      <router-link to="/clientrequests" class="back-btn">
-        Volver a las solicitudes
-      </router-link>
+<router-link
+  :to="isAdmin ? '/admin/requests' : '/clientrequests'"
+  class="back-btn"
+>
+  Volver a las solicitudes
+</router-link>
+
     </div>
   </div>
 </template>
