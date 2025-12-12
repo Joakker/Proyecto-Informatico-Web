@@ -74,7 +74,7 @@
           </div>
 
           <p class="worker-email">📧 {{ worker.email }}</p>
-
+          <p class="worker-phone">📞 {{ worker.phone_number }}</p>
           <p class="worker-categories">
             <strong>Categorías:</strong><br>
             <span
@@ -112,6 +112,7 @@ interface WorkerInfo {
   last_name: string
   address: string
   email: string
+  phone_number: string
   workers: { categories: WorkerCategory[] } | null
 }
 
@@ -312,6 +313,13 @@ async function searchWorkers() {
 .worker-email {
   margin: 10px 0;
 }
+
+.worker-phone {
+  margin: 8px 0;
+  font-weight: 500;
+  color: #1f2937;
+}
+
 
 .worker-categories {
   font-size: 14px;

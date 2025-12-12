@@ -93,7 +93,7 @@ async function acceptJob() {
       body: JSON.stringify({
         client_id: request.value.client?.client_id,
         client_request_id: request.value.client_request_id,
-        state: 'pendiente',
+        state: 'postulado',
       }),
     })
 
